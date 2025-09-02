@@ -1,12 +1,205 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'mateabags';
+export class AppComponent implements OnInit {
+  title = 'MATEA - El bolso de mate reinventado';
+  
+  // Datos del formulario
+  formData = {
+    nombre: '',
+    email: '',
+    pais: ''
+  };
+  
+  // Variables del carrusel
+  currentSlide = 0;
+  totalSlides = 6;
+  isDragging = false;
+  startX = 0;
+  currentX = 0;
+  dragOffset = 0;
+  
+  // Variable para controlar la transparencia del header
+  isScrolled = false;
+  
+  ngOnInit() {
+    // Inicializar el estado del scroll
+    this.checkScroll();
+  }
+  
+  // Detectar scroll y cambiar la opacidad del header
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.checkScroll();
+  }
+  
+  private checkScroll() {
+    this.isScrolled = window.scrollY > 10; // Cambiar a transparente después de 10px de scroll
+  }
+  
+  // Método para enviar el formulario
+  onSubmit() {
+    if (this.formData.nombre && this.formData.email && this.formData.pais) {
+      console.log('Formulario enviado:', this.formData);
+      alert('¡Gracias por unirte a la lista de espera!');
+      this.formData = { nombre: '', email: '', pais: '' }; // Limpiar formulario
+    } else {
+      alert('Por favor, completa todos los campos del formulario.');
+    }
+  }
+  
+  // Navegación del carrusel
+  nextSlide() {
+    if (this.currentSlide < this.totalSlides - 1) {
+      this.currentSlide++;
+      this.updateCarousel();
+    }
+  }
+  
+  previousSlide() {
+    if (this.currentSlide > 0) {
+      this.currentSlide--;
+      this.updateCarousel();
+    }
+  }
+  
+  goToSlide(index: number) {
+    if (index >= 0 && index < this.totalSlides) {
+      this.currentSlide = index;
+      this.updateCarousel();
+    }
+  }
+  
+  // Método para actualizar la posición del carrusel
+  private updateCarousel() {
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (track) {
+      const cardWidth = 400; // Ancho de cada tarjeta
+      const gap = 30; // Espacio entre tarjetas
+      const offset = this.currentSlide * (cardWidth + gap);
+      track.style.transform = `translateX(-${offset}px)`;
+      
+      // Actualizar indicadores
+      this.updateIndicators();
+    }
+  }
+  
+  // Método para actualizar los indicadores
+  private updateIndicators() {
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach((indicator, index) => {
+      if (index === this.currentSlide) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+  }
+  
+  // Eventos de deslizamiento (swipe)
+  onMouseDown(event: MouseEvent) {
+    this.isDragging = true;
+    this.startX = event.clientX;
+    this.currentX = this.startX;
+    this.dragOffset = 0;
+    
+    event.preventDefault();
+  }
+  
+  onMouseMove(event: MouseEvent) {
+    if (!this.isDragging) return;
+    
+    this.currentX = event.clientX;
+    this.dragOffset = this.currentX - this.startX;
+    
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (track) {
+      const cardWidth = 400;
+      const gap = 30;
+      const baseOffset = this.currentSlide * (cardWidth + gap);
+      const dragTransform = baseOffset - this.dragOffset;
+      track.style.transform = `translateX(-${dragTransform}px)`;
+    }
+  }
+  
+  onMouseUp() {
+    if (!this.isDragging) return;
+    
+    this.isDragging = false;
+    
+    // Determinar si debe cambiar de slide basado en el deslizamiento
+    const threshold = 100; // Píxeles mínimos para cambiar de slide
+    
+    if (this.dragOffset > threshold && this.currentSlide > 0) {
+      this.previousSlide();
+    } else if (this.dragOffset < -threshold && this.currentSlide < this.totalSlides - 1) {
+      this.nextSlide();
+    } else {
+      // Volver a la posición original
+      this.updateCarousel();
+    }
+  }
+  
+  // Eventos de touch para móviles
+  onTouchStart(event: TouchEvent) {
+    this.isDragging = true;
+    this.startX = event.touches[0].clientX;
+    this.currentX = this.startX;
+    this.dragOffset = 0;
+  }
+  
+  onTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+    
+    this.currentX = event.touches[0].clientX;
+    this.dragOffset = this.currentX - this.startX;
+    
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (track) {
+      const cardWidth = 400;
+      const gap = 30;
+      const baseOffset = this.currentSlide * (cardWidth + gap);
+      const dragTransform = baseOffset - this.dragOffset;
+      track.style.transform = `translateX(-${dragTransform}px)`;
+    }
+  }
+  
+  onTouchEnd() {
+    if (!this.isDragging) return;
+    
+    this.isDragging = false;
+    
+    // Determinar si debe cambiar de slide basado en el deslizamiento
+    const threshold = 80; // Píxeles mínimos para cambiar de slide en móvil
+    
+    if (this.dragOffset > threshold && this.currentSlide > 0) {
+      this.previousSlide();
+    } else if (this.dragOffset < -threshold && this.currentSlide < this.totalSlides - 1) {
+      this.nextSlide();
+    } else {
+      // Volver a la posición original
+      this.updateCarousel();
+    }
+  }
+  
+  // Evento de rueda del mouse con Shift
+  onWheel(event: WheelEvent) {
+    if (event.shiftKey) {
+      event.preventDefault();
+      
+      if (event.deltaY > 0) {
+        this.nextSlide();
+      } else {
+        this.previousSlide();
+      }
+    }
+  }
 }
