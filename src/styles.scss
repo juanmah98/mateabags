@@ -1,7 +1,7 @@
-/* Importar Google Fonts */
+@use "sass:color";
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
-/* Variables de color */
+/* Variables CSS */
 :root {
   --color-primary: #F7F4EE;
   --color-secondary: #3F4C3C;
@@ -68,8 +68,8 @@ p {
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: darken(#3F4C3C, 10%);
-    border-color: darken(#3F4C3C, 10%);
+    background-color: color.adjust(#3F4C3C, $lightness: -10%);
+    border-color: color.adjust(#3F4C3C, $lightness: -10%);
     color: var(--color-text-light);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(63, 76, 60, 0.3);

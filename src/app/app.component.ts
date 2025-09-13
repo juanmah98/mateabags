@@ -73,19 +73,44 @@ export class AppComponent implements OnInit {
   
   goToSlide(index: number) {
     if (index >= 0 && index < this.totalSlides) {
+      console.log(`Navegando a slide ${index} desde slide ${this.currentSlide}`);
       this.currentSlide = index;
-      this.updateCarousel();
+      
+      // Forzar la actualización del DOM
+      setTimeout(() => {
+        this.updateCarousel();
+      }, 0);
     }
   }
   
   // Método para actualizar la posición del carrusel
   private updateCarousel() {
     const track = document.querySelector('.carousel-track') as HTMLElement;
-    if (track) {
+    const container = document.querySelector('.carousel-container') as HTMLElement;
+    
+    if (track && container) {
       const cardWidth = 400; // Ancho de cada tarjeta
-      const gap = 30; // Espacio entre tarjetas
-      const offset = this.currentSlide * (cardWidth + gap);
-      track.style.transform = `translateX(-${offset}px)`;
+      const gap = 60; // Espacio entre tarjetas (debe coincidir con CSS)
+      const containerWidth = container.offsetWidth;
+      const trackPadding = 50; // Padding del track (debe coincidir con CSS)
+      
+      // Calcular la posición para centrar la tarjeta
+      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
+      const centerOffset = (containerWidth - cardWidth) / 2;
+      const finalOffset = cardPosition - centerOffset;
+      
+      console.log(`Slide ${this.currentSlide}: cardPosition=${cardPosition}, centerOffset=${centerOffset}, finalOffset=${finalOffset}, containerWidth=${containerWidth}`);
+      
+      // Aplicar el transform correctamente
+      // Si finalOffset es negativo, necesitamos mover hacia la derecha (valor positivo)
+      // Si finalOffset es positivo, necesitamos mover hacia la izquierda (valor negativo)
+      const transformValue = `translateX(${-finalOffset}px)`;
+      track.style.transform = transformValue;
+      console.log(`Transform aplicado: ${transformValue}`);
+      
+      // Verificar que se aplicó correctamente
+      const computedStyle = window.getComputedStyle(track);
+      console.log(`Transform real: ${computedStyle.transform}`);
       
       // Actualizar indicadores
       this.updateIndicators();
@@ -121,12 +146,22 @@ export class AppComponent implements OnInit {
     this.dragOffset = this.currentX - this.startX;
     
     const track = document.querySelector('.carousel-track') as HTMLElement;
-    if (track) {
+    const container = document.querySelector('.carousel-container') as HTMLElement;
+    
+    if (track && container) {
       const cardWidth = 400;
-      const gap = 30;
-      const baseOffset = this.currentSlide * (cardWidth + gap);
+      const gap = 60;
+      const containerWidth = container.offsetWidth;
+      const trackPadding = 50;
+      
+      // Calcular la posición base centrada
+      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
+      const centerOffset = (containerWidth - cardWidth) / 2;
+      const baseOffset = cardPosition - centerOffset;
+      
+      // Aplicar el arrastre
       const dragTransform = baseOffset - this.dragOffset;
-      track.style.transform = `translateX(-${dragTransform}px)`;
+      track.style.transform = `translateX(${-dragTransform}px)`;
     }
   }
   
@@ -163,12 +198,22 @@ export class AppComponent implements OnInit {
     this.dragOffset = this.currentX - this.startX;
     
     const track = document.querySelector('.carousel-track') as HTMLElement;
-    if (track) {
+    const container = document.querySelector('.carousel-container') as HTMLElement;
+    
+    if (track && container) {
       const cardWidth = 400;
-      const gap = 30;
-      const baseOffset = this.currentSlide * (cardWidth + gap);
+      const gap = 60;
+      const containerWidth = container.offsetWidth;
+      const trackPadding = 50;
+      
+      // Calcular la posición base centrada
+      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
+      const centerOffset = (containerWidth - cardWidth) / 2;
+      const baseOffset = cardPosition - centerOffset;
+      
+      // Aplicar el arrastre
       const dragTransform = baseOffset - this.dragOffset;
-      track.style.transform = `translateX(-${dragTransform}px)`;
+      track.style.transform = `translateX(${-dragTransform}px)`;
     }
   }
   
