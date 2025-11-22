@@ -18,6 +18,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   line-height: 1.6;
@@ -159,7 +164,12 @@ p {
 
 /* Contenedores y secciones */
 .container-fluid {
-  padding: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .section {
