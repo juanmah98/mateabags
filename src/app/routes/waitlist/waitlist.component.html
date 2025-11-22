@@ -28,6 +28,16 @@
         <!-- Form -->
         <div class="waitlist-form">
           <form (ngSubmit)="onSubmit()">
+            <!-- Mensaje de éxito -->
+            <div *ngIf="submitSuccess" class="alert alert-success">
+              ¡Gracias por unirte a la lista privada! Te notificaremos cuando esté disponible.
+            </div>
+            
+            <!-- Mensaje de error -->
+            <div *ngIf="submitError" class="alert alert-error">
+              {{ submitError }}
+            </div>
+            
             <div class="form-group">
               <input 
                 type="text" 
@@ -35,7 +45,8 @@
                 placeholder="Nombre" 
                 required 
                 [(ngModel)]="formData.nombre" 
-                name="nombre">
+                name="nombre"
+                [disabled]="isSubmitting">
             </div>
             <div class="form-group">
               <input 
@@ -44,10 +55,17 @@
                 placeholder="Correo electrónico" 
                 required 
                 [(ngModel)]="formData.email" 
-                name="email">
+                name="email"
+                [disabled]="isSubmitting">
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-submit">Unirme a la lista privada</button>
+              <button 
+                type="submit" 
+                class="btn btn-submit"
+                [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Unirme a la lista privada</span>
+                <span *ngIf="isSubmitting">Enviando...</span>
+              </button>
             </div>
           </form>
         </div>

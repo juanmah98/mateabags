@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { SupabaseService } from '../../services/supabase.service';
 
 @Component({
   selector: 'app-waitlist',
@@ -21,6 +22,11 @@ export class WaitlistComponent implements OnInit, OnDestroy {
     email: ''
   };
   
+  // Estados del formulario
+  isSubmitting = false;
+  submitSuccess = false;
+  submitError = '';
+  
   // Countdown timer
   countdown = {
     days: 0,
@@ -30,6 +36,8 @@ export class WaitlistComponent implements OnInit, OnDestroy {
   };
   
   private countdownInterval: any;
+  
+  constructor(private supabaseService: SupabaseService) {}
   
   ngOnInit() {
     this.startCountdown();
@@ -84,14 +92,61 @@ export class WaitlistComponent implements OnInit, OnDestroy {
   }
   
   // Método para enviar el formulario
-  onSubmit() {
-    if (this.formData.nombre && this.formData.email) {
-      console.log('Formulario enviado:', this.formData);
-      // TODO: Integrar con Supabase aquí
-      alert('¡Gracias por unirte a la lista privada!');
-      this.formData = { nombre: '', email: '' }; // Limpiar formulario
-    } else {
-      alert('Por favor, completa todos los campos del formulario.');
+  async onSubmit() {
+    // Validar campos
+    if (!this.formData.nombre || !this.formData.email) {
+      this.submitError = 'Por favor, completa todos los campos del formulario.';
+      return;
+    }
+    
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.formData.email)) {
+      this.submitError = 'Por favor, ingresa un correo electrónico válido.';
+      return;
+    }
+    
+    // Resetear estados
+    this.submitError = '';
+    this.submitSuccess = false;
+    this.isSubmitting = true;
+    
+    try {
+      // Normalizar el email (minúsculas y sin espacios)
+      const normalizedEmail = this.formData.email.toLowerCase().trim();
+      
+      // Verificar si el email ya existe
+      const emailExists = await this.supabaseService.emailExists(normalizedEmail);
+      
+      if (emailExists) {
+        this.submitError = 'Este correo electrónico ya está registrado en la lista.';
+        this.isSubmitting = false;
+        return;
+      }
+      
+      // Guardar en Supabase
+      const { data, error } = await this.supabaseService.addToWaitlist({
+        name: this.formData.nombre.trim(),
+        email: normalizedEmail
+      });
+      
+      if (error) {
+        console.error('Error al guardar:', error);
+        this.submitError = 'Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.';
+      } else {
+        this.submitSuccess = true;
+        this.formData = { nombre: '', email: '' }; // Limpiar formulario
+        
+        // Ocultar mensaje de éxito después de 5 segundos
+        setTimeout(() => {
+          this.submitSuccess = false;
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Error inesperado:', error);
+      this.submitError = 'Hubo un error inesperado. Por favor, intenta nuevamente.';
+    } finally {
+      this.isSubmitting = false;
     }
   }
 }
