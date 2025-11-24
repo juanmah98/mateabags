@@ -28,8 +28,9 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background-image: url('../../../assets/waitlist/background2.webp');
+  background-image:  linear-gradient(to right, rgba(27, 27, 27, 0.178), rgba(0, 0, 0, 0.308)), url('../../../assets/waitlist/background2.webp');
   background-size: cover;
+  background-color: white;
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -37,16 +38,6 @@ body {
   width: 100%;
   overflow: hidden;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 1;
-  }
   
   .container-fluid {
     position: relative;
@@ -129,7 +120,7 @@ body {
 .waitlist-section {
   background-color: white;
   padding: 80px 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   
   .top-text,
   .bottom-text {
@@ -289,6 +280,18 @@ body {
   }
 }
 
+/* Section Second - Second Section */
+.section-second {
+  align-items: center;
+  background-image: url('../../../assets/waitlist/mateaAdvisory2.webp');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  padding: 120px 0 80px 0;
+  width: 100%;
+  min-height: 130dvh;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .section-first {
@@ -296,6 +299,11 @@ body {
     min-height: 70vh;
     background-size: 120% auto;
     background-attachment: scroll;
+
+    background-size: auto;
+    background-position: left center;
+
+    overflow: hidden;
     
     .container-fluid {
       padding-left: 15px;
@@ -363,8 +371,7 @@ body {
   }
   
   .section-second {
-    min-height: 80vh;
-    background-size: 120% auto;
+    min-height: 100vh;
     padding: 80px 0 60px 0;
   }
 }
@@ -373,7 +380,7 @@ body {
   .section-first {
     padding: 70px 0 40px 0;
     min-height: 60vh;
-    background-size: 150% auto;
+    background-position: 25% center;
     background-attachment: scroll;
     
     .container-fluid {
@@ -409,7 +416,7 @@ body {
   
   .waitlist-section {
     padding: 40px 0;
-    
+    min-height: 80dvh;
     .top-text,
     .bottom-text {
       .text-line {
@@ -463,19 +470,9 @@ body {
   
   .section-second {
     min-height: 60vh;
-    background-size: 150% auto;
+    /* background-size: 150% auto; */
     padding: 60px 0 40px 0;
   }
 }
 
-/* Section Second - Second Section */
-.section-second {
-    align-items: center;
-    background-image: url('../../../assets/waitlist/mateaAdvisory2.webp');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    padding: 120px 0 80px 0;
-    width: 100%;
-    min-height: 130dvh;
-}
+
