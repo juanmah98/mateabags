@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
+import { animate, stagger } from 'animejs';
 
 @Component({
   selector: 'app-waitlist',
@@ -11,7 +12,7 @@ import { SupabaseService } from '../../services/supabase.service';
   templateUrl: './waitlist.component.html',
   styleUrl: './waitlist.component.scss'
 })
-export class WaitlistComponent implements OnInit, OnDestroy {
+export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   // FECHA OBJETIVO - Cambia esta fecha según necesites
   // Formato: año, mes (0-11), día, hora, minuto, segundo
   targetDate: Date = new Date(2026, 1, 1, 23, 59, 59); // 01 de febrero de 2026, 23:59:59
@@ -36,11 +37,17 @@ export class WaitlistComponent implements OnInit, OnDestroy {
   };
   
   private countdownInterval: any;
-  
   constructor(private supabaseService: SupabaseService) {}
   
   ngOnInit() {
     this.startCountdown();
+  }
+  
+  ngAfterViewInit() {
+    // Esperamos un momento para que Angular renderice completamente el DOM
+    setTimeout(() => {
+      this.initCountdownAnimation();
+    }, 100);
   }
   
   ngOnDestroy() {
@@ -82,6 +89,65 @@ export class WaitlistComponent implements OnInit, OnDestroy {
   formatNumber(num: number): string {
     return num.toString().padStart(2, '0');
   }
+  
+  /**
+   * Inicializa la animación del countdown timer cuando entra en el viewport
+   * 
+   * Explicación del código:
+   * 1. Buscamos el contenedor del countdown y los items individuales
+   * 2. Configuramos el estado inicial (ocultos y escalados hacia abajo)
+   * 3. Usamos Intersection Observer para detectar cuando el elemento entra en vista
+   * 4. Cuando entra en vista, activamos la animación con anime.js usando stagger
+   */
+  initCountdownAnimation() {
+    const countdownContainer = document.querySelector('.countdown-container');
+    const countdownItems = document.querySelectorAll('.countdown-item');
+    
+    if (!countdownContainer || countdownItems.length === 0) {
+      return;
+    }
+    
+    // Configuramos el estado inicial de los elementos (ocultos)
+    // Esto se hace antes de la animación para que no se vean hasta que entren en vista
+    countdownItems.forEach((item: any) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(30px) scale(0.8)';
+    });
+    
+    // Variable para asegurar que la animación solo se ejecute una vez
+    let hasAnimated = false;
+    
+    // Usamos Intersection Observer para detectar cuando el elemento entra en el viewport
+    // Es más compatible y funciona igual de bien que el Scroll Observer de anime.js
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // Cuando el elemento entra en vista (isIntersecting = true) y no se ha animado aún
+        if (entry.isIntersecting && !hasAnimated) {
+          hasAnimated = true;
+          
+          // Animamos los items del countdown con anime.js
+          animate(countdownItems, {
+            opacity: [0, 1],                    // Fade in: de invisible a visible
+            translateY: [0, 0],                // Se mueve desde abajo hacia su posición
+            scale: [1, 1],                    // Escala desde pequeño a tamaño normal
+            duration: 800,                      // Duración de 800ms
+            delay: stagger(100),                // Cada item se anima 100ms después del anterior
+            ease: 'easeOutExpo'                 // Easing suave y elegante
+          });
+          
+          // Dejamos de observar una vez que se ha animado
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.3,  // Se activa cuando el 30% del elemento es visible
+      rootMargin: '0px 0px -100px 0px'  // Se activa un poco antes de que entre completamente
+    });
+    
+    // Empezamos a observar el contenedor del countdown
+    observer.observe(countdownContainer);
+  }
+  
   
   // Método para hacer scroll al formulario
   scrollToForm() {

@@ -28,7 +28,7 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background-image: url('../../../assets/waitlist/background.webp');
+  background-image: url('../../../assets/waitlist/background2.webp');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -154,6 +154,8 @@ body {
   .waitlist-form {
     max-width: 500px;
     margin: 0 auto;
+    background-color: white;
+    border-radius: 15px;
     
     .alert {
       padding: 15px 20px;
@@ -257,6 +259,10 @@ body {
       .countdown-item {
         flex: 1;
         text-align: center;
+        // Optimización para animaciones: le dice al navegador que prepare estos elementos
+        will-change: transform, opacity;
+        // Aseguramos que las transformaciones sean suaves
+        transform-origin: center center;
         
         .countdown-number {
           font-family: 'Open Sans', sans-serif;
@@ -265,6 +271,8 @@ body {
           color: var(--color-secondary);
           line-height: 1;
           margin-bottom: 10px;
+          // Transición suave para cuando cambien los números
+          transition: transform 0.3s ease;
         }
         
         .countdown-label {
@@ -463,7 +471,7 @@ body {
 /* Section Second - Second Section */
 .section-second {
     align-items: center;
-    background-image: url('../../../assets/waitlist/mateaAdvisory.webp');
+    background-image: url('../../../assets/waitlist/mateaAdvisory2.webp');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
