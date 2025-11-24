@@ -27,7 +27,7 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   isSubmitting = false;
   submitSuccess = false;
   submitError = '';
-  showSuccessPopup = true;
+  showSuccessPopup = false;
   
   // Countdown timer
   countdown = {
