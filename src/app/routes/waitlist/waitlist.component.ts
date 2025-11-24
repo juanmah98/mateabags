@@ -27,6 +27,7 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   isSubmitting = false;
   submitSuccess = false;
   submitError = '';
+  showSuccessPopup = true;
   
   // Countdown timer
   countdown = {
@@ -37,6 +38,7 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   
   private countdownInterval: any;
+  private errorTimeoutId?: ReturnType<typeof setTimeout>;
   constructor(private supabaseService: SupabaseService) {}
   
   ngOnInit() {
@@ -53,6 +55,9 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
+    }
+    if (this.errorTimeoutId) {
+      clearTimeout(this.errorTimeoutId);
     }
   }
   
@@ -161,14 +166,14 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   async onSubmit() {
     // Validar campos
     if (!this.formData.nombre || !this.formData.email) {
-      this.submitError = 'Por favor, completa todos los campos del formulario.';
+      this.showError('Por favor, completa todos los campos del formulario.');
       return;
     }
     
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.formData.email)) {
-      this.submitError = 'Por favor, ingresa un correo electrónico válido.';
+      this.showError('Por favor, ingresa un correo electrónico válido.');
       return;
     }
     
@@ -185,7 +190,7 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
       const emailExists = await this.supabaseService.emailExists(normalizedEmail);
       
       if (emailExists) {
-        this.submitError = 'Este correo electrónico ya está registrado en la lista.';
+        this.showError('Este correo electrónico ya está registrado en la lista.');
         this.isSubmitting = false;
         return;
       }
@@ -198,21 +203,34 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
       
       if (error) {
         console.error('Error al guardar:', error);
-        this.submitError = 'Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.';
+        this.showError('Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente.');
       } else {
         this.submitSuccess = true;
+        this.showSuccessPopup = true;
         this.formData = { nombre: '', email: '' }; // Limpiar formulario
         
-        // Ocultar mensaje de éxito después de 5 segundos
-        setTimeout(() => {
-          this.submitSuccess = false;
-        }, 5000);
       }
     } catch (error) {
       console.error('Error inesperado:', error);
-      this.submitError = 'Hubo un error inesperado. Por favor, intenta nuevamente.';
+      this.showError('Hubo un error inesperado. Por favor, intenta nuevamente.');
     } finally {
       this.isSubmitting = false;
     }
+  }
+
+  private showError(message: string) {
+    this.submitError = message;
+    if (this.errorTimeoutId) {
+      clearTimeout(this.errorTimeoutId);
+    }
+    this.errorTimeoutId = setTimeout(() => {
+      this.submitError = '';
+      this.errorTimeoutId = undefined;
+    }, 4000);
+  }
+
+  closeSuccessPopup() {
+    this.showSuccessPopup = false;
+    this.submitSuccess = false;
   }
 }
