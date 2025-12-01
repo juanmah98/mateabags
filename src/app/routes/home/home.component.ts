@@ -19,9 +19,22 @@ export class HomeComponent implements OnInit {
   startX = 0;
   currentX = 0;
   dragOffset = 0;
+
+  // Lightbox para la galería estática
+  lightboxImage: { src: string; alt: string } | null = null;
   
   ngOnInit() {
     // Inicialización del componente
+  }
+
+  // --- Lightbox de la galería estática ---
+
+  openLightbox(src: string, alt: string) {
+    this.lightboxImage = { src, alt };
+  }
+
+  closeLightbox() {
+    this.lightboxImage = null;
   }
   
   // Navegación del carrusel

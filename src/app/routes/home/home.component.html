@@ -30,19 +30,37 @@
       <div class="col-12">
         <div class="gallery-grid">
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-1.png" alt="MATEA Bag 1" class="img-fluid">
+            <img src="assets/carrusel/imagen-1.png"
+                 alt="MATEA Bag 1"
+                 class="img-fluid"
+                 (click)="openLightbox('assets/carrusel/imagen-1.png', 'MATEA Bag 1')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-2.png" alt="MATEA Bag 2" class="img-fluid">
+            <img src="assets/carrusel/imagen-2.png"
+                 alt="MATEA Bag 2"
+                 class="img-fluid"
+                 (click)="openLightbox('assets/carrusel/imagen-2.png', 'MATEA Bag 2')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-3.png" alt="MATEA Bag 3" class="img-fluid">
+            <img src="assets/carrusel/imagen-3.png"
+                 alt="MATEA Bag 3"
+                 class="img-fluid"
+                 (click)="openLightbox('assets/carrusel/imagen-3.png', 'MATEA Bag 3')">
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Lightbox para la galería estática -->
+<div class="image-lightbox-backdrop"
+     *ngIf="lightboxImage"
+     (click)="closeLightbox()">
+  <div class="image-lightbox" (click)="$event.stopPropagation()">
+    <img [src]="lightboxImage!.src" [alt]="lightboxImage!.alt">
+  </div>
+</div>
 
 <!-- Main Product Section -->
 <section class="main-product-section section" style="background-image: url('assets/principales/bolso-grande.png');">
@@ -92,7 +110,7 @@
                   </p>
                 </div>
                 <div class="card-image">
-                  <img src="assets/carrusel/imagen-1.png" alt="Interior organizado MATEA">
+                  <img src="assets/cards/yerbero.png" alt="Interior organizado MATEA">
                 </div>
               </div>
               
@@ -106,7 +124,7 @@
                   </p>
                 </div>
                 <div class="card-image">
-                  <img src="assets/carrusel/imagen-2.png" alt="Yerbera integrada MATEA">
+                  <img src="assets/cards/bombilla.png" alt="Yerbera integrada MATEA">
                 </div>
               </div>
               
@@ -120,7 +138,7 @@
                   </p>
                 </div>
                 <div class="card-image">
-                  <img src="assets/carrusel/imagen-3.png" alt="Detalle del bolso MATEA">
+                  <img src="assets/cards/cuerda.png" alt="Detalle del bolso MATEA">
                 </div>
               </div>
               
@@ -196,14 +214,26 @@
   </div>
 </section>
 
-<section class="main-product-section2 section">
-  <div class="container-fluid p-0">
-    <div class="row g-0">
-      <div class="col-12">
-        <div class="main-product-image2">
-          <div class="parallax">
-            <img src="assets/principales/bolso-grande.png" alt="MATEA Bag Principal" class="img-fluid">
-          </div>
+<section class="video-section section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 col-md-12">
+        <div class="video-media">
+          <video autoplay muted loop playsinline
+                 src="assets/principales/video-section.mp4"
+                 class="hero-bg-video">
+          </video>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-12">
+        <div class="video-copy">
+          <h2 class="video-title">MATEA, no solo es un bolso, es estilo.</h2>
+          <p class="video-description">
+            Un compartimento exterior diseñado para sujetarlo cuando está servido.
+            Extraíble, elegante y práctico: lo usás cuando lo necesitás y desaparece
+            cuando no. MATEA entiende que cada detalle debe adaptarse a vos.
+          </p>
+          <a routerLink="/waitlist" class="btn video-btn">Comprar</a>
         </div>
       </div>
     </div>
