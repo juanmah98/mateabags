@@ -112,52 +112,38 @@ body {
     
     .carousel-track {
       display: flex;
-      transition: transform 0.5s ease-in-out;
       gap: 60px;
       padding: 20px 0;
       padding-left: 50px;
       padding-right: 50px;
       cursor: grab;
       user-select: none;
-      
-      &:active {
-        cursor: grabbing;
-        transition: none;
-      }
     }
     
     .carousel-card {
-      min-width: 400px;
-      height: 500px;
+      flex: 0 0 32%;
+      max-width: 32%;
+      height: 420px;
       background: var(--color-primary);
       border-radius: 15px;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
       
       &:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       }
       
-      .card-image-placeholder {
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-        font-size: 1.2rem;
-        font-weight: 500;
-        border-bottom: 1px solid #eee;
-      }
-      
       .card-content {
         padding: 30px;
-        height: 200px;
+        min-height: 200px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        transition: filter 0.4s ease, opacity 0.4s ease;
         
         h4 {
           color: var(--color-secondary);
@@ -174,6 +160,30 @@ body {
           margin-bottom: 0;
           flex-grow: 1;
         }
+      }
+      
+      .card-image {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+      }
+      
+      &:hover .card-image img {
+        transform: translateY(-10px) scale(1.08);
+      }
+      
+      &:hover .card-content {
+        filter: blur(4px);
+        opacity: 0.18;
       }
     }
     
@@ -234,6 +244,17 @@ body {
         &:hover {
           transform: scale(1.05);
         }
+      }
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .product-gallery-section {
+    .product-carousel {
+      .carousel-card {
+        flex: 0 0 32%;
+        max-width: 32%;
       }
     }
   }
@@ -320,16 +341,18 @@ body {
   .product-gallery-section {
     .product-carousel {
       .carousel-card {
-        min-width: 320px;
-        height: 450px;
-        
-        .card-image-placeholder {
-          height: 250px;
-        }
-        
+        flex: 0 0 48%;
+        max-width: 48%;
+        height: 380px;
         .card-content {
           padding: 25px;
-          height: 200px;
+          min-height: 190px;
+        }
+        
+        .card-image {
+          img {
+            height: 100%;
+          }
         }
       }
       
@@ -363,23 +386,17 @@ body {
   .product-gallery-section {
     .product-carousel {
       .carousel-card {
-        width: 100%;
-        height: 400px;
-        
-        .card-image-placeholder {
-          height: 200px;
-        }
-        
+        flex: 0 0 100%;
+        max-width: 100%;
+        height: 380px;
         .card-content {
           padding: 20px;
-          height: 200px;
-          
-          h4 {
-            font-size: 1.2rem;
-          }
-          
-          p {
-            font-size: 1rem;
+          min-height: 180px;
+        }
+        
+        .card-image {
+          img {
+            height: 100%;
           }
         }
       }

@@ -1,0 +1,27 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1 class="login-title">Acceso Privado</h1>
+    <p class="login-subtitle">Ingresa la clave para acceder</p>
+    
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <input 
+          type="password" 
+          class="form-control" 
+          placeholder="Clave de acceso"
+          [(ngModel)]="accessKey"
+          name="accessKey"
+          autofocus>
+      </div>
+      
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
+      <button type="submit" class="btn-submit">
+        Acceder
+      </button>
+    </form>
+  </div>
+</div>
+

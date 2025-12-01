@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { animate } from 'animejs';
 
 @Component({
   selector: 'app-home',
@@ -27,57 +28,58 @@ export class HomeComponent implements OnInit {
   nextSlide() {
     if (this.currentSlide < this.totalSlides - 1) {
       this.currentSlide++;
-      this.updateCarousel();
+      this.updateCarousel(true);
     }
   }
   
   previousSlide() {
     if (this.currentSlide > 0) {
       this.currentSlide--;
-      this.updateCarousel();
+      this.updateCarousel(true);
     }
   }
   
   goToSlide(index: number) {
     if (index >= 0 && index < this.totalSlides) {
-      console.log(`Navegando a slide ${index} desde slide ${this.currentSlide}`);
       this.currentSlide = index;
       
-      // Forzar la actualización del DOM
+      // Forzar la actualización del DOM y animar
       setTimeout(() => {
-        this.updateCarousel();
+        this.updateCarousel(true);
       }, 0);
     }
   }
   
   // Método para actualizar la posición del carrusel
-  private updateCarousel() {
+  private updateCarousel(animateTransition: boolean = false) {
     const track = document.querySelector('.carousel-track') as HTMLElement;
     const container = document.querySelector('.carousel-container') as HTMLElement;
     
     if (track && container) {
-      const cardWidth = 400; // Ancho de cada tarjeta
-      const gap = 60; // Espacio entre tarjetas (debe coincidir con CSS)
+      const cards = track.querySelectorAll('.carousel-card') as NodeListOf<HTMLElement>;
+      if (!cards.length || this.currentSlide < 0 || this.currentSlide >= cards.length) {
+        return;
+      }
+
+      const activeCard = cards[this.currentSlide];
       const containerWidth = container.offsetWidth;
-      const trackPadding = 50; // Padding del track (debe coincidir con CSS)
+
+      // Centro de la tarjeta activa dentro del track
+      const cardCenter = activeCard.offsetLeft + activeCard.offsetWidth / 2;
+      // Offset necesario para centrar la tarjeta en el contenedor
+      const finalOffset = cardCenter - containerWidth / 2;
       
-      // Calcular la posición para centrar la tarjeta
-      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
-      const centerOffset = (containerWidth - cardWidth) / 2;
-      const finalOffset = cardPosition - centerOffset;
-      
-      console.log(`Slide ${this.currentSlide}: cardPosition=${cardPosition}, centerOffset=${centerOffset}, finalOffset=${finalOffset}, containerWidth=${containerWidth}`);
-      
-      // Aplicar el transform correctamente
-      // Si finalOffset es negativo, necesitamos mover hacia la derecha (valor positivo)
-      // Si finalOffset es positivo, necesitamos mover hacia la izquierda (valor negativo)
-      const transformValue = `translateX(${-finalOffset}px)`;
-      track.style.transform = transformValue;
-      console.log(`Transform aplicado: ${transformValue}`);
-      
-      // Verificar que se aplicó correctamente
-      const computedStyle = window.getComputedStyle(track);
-      console.log(`Transform real: ${computedStyle.transform}`);
+      if (animateTransition) {
+        // Animación suave con anime.js
+        animate(track, {
+          translateX: -finalOffset,
+          duration: 600,
+          easing: 'easeOutExpo'
+        });
+      } else {
+        // Aplicación inmediata (por ejemplo, al iniciar o durante drag)
+        track.style.transform = `translateX(${-finalOffset}px)`;
+      }
       
       // Actualizar indicadores
       this.updateIndicators();
@@ -116,15 +118,15 @@ export class HomeComponent implements OnInit {
     const container = document.querySelector('.carousel-container') as HTMLElement;
     
     if (track && container) {
-      const cardWidth = 400;
-      const gap = 60;
+      const cards = track.querySelectorAll('.carousel-card') as NodeListOf<HTMLElement>;
+      if (!cards.length || this.currentSlide < 0 || this.currentSlide >= cards.length) {
+        return;
+      }
+
+      const activeCard = cards[this.currentSlide];
       const containerWidth = container.offsetWidth;
-      const trackPadding = 50;
-      
-      // Calcular la posición base centrada
-      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
-      const centerOffset = (containerWidth - cardWidth) / 2;
-      const baseOffset = cardPosition - centerOffset;
+      const cardCenter = activeCard.offsetLeft + activeCard.offsetWidth / 2;
+      const baseOffset = cardCenter - containerWidth / 2;
       
       // Aplicar el arrastre
       const dragTransform = baseOffset - this.dragOffset;
@@ -146,7 +148,7 @@ export class HomeComponent implements OnInit {
       this.nextSlide();
     } else {
       // Volver a la posición original
-      this.updateCarousel();
+      this.updateCarousel(true);
     }
   }
   
@@ -168,15 +170,15 @@ export class HomeComponent implements OnInit {
     const container = document.querySelector('.carousel-container') as HTMLElement;
     
     if (track && container) {
-      const cardWidth = 400;
-      const gap = 60;
+      const cards = track.querySelectorAll('.carousel-card') as NodeListOf<HTMLElement>;
+      if (!cards.length || this.currentSlide < 0 || this.currentSlide >= cards.length) {
+        return;
+      }
+
+      const activeCard = cards[this.currentSlide];
       const containerWidth = container.offsetWidth;
-      const trackPadding = 50;
-      
-      // Calcular la posición base centrada
-      const cardPosition = this.currentSlide * (cardWidth + gap) + trackPadding;
-      const centerOffset = (containerWidth - cardWidth) / 2;
-      const baseOffset = cardPosition - centerOffset;
+      const cardCenter = activeCard.offsetLeft + activeCard.offsetWidth / 2;
+      const baseOffset = cardCenter - containerWidth / 2;
       
       // Aplicar el arrastre
       const dragTransform = baseOffset - this.dragOffset;
@@ -198,7 +200,7 @@ export class HomeComponent implements OnInit {
       this.nextSlide();
     } else {
       // Volver a la posición original
-      this.updateCarousel();
+      this.updateCarousel(true);
     }
   }
   
