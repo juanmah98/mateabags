@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -11,7 +11,7 @@ import { animate } from 'animejs';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Variables del carrusel
   currentSlide = 0;
   totalSlides = 6;
@@ -23,8 +23,102 @@ export class HomeComponent implements OnInit {
   // Lightbox para la galería estática
   lightboxImage: { src: string; alt: string } | null = null;
   
+  // Observers para las animaciones de scroll
+  private scrollObservers: IntersectionObserver[] = [];
+  
   ngOnInit() {
     // Inicialización del componente
+  }
+  
+  ngAfterViewInit() {
+    // Esperamos un momento para que Angular renderice completamente el DOM
+    setTimeout(() => {
+      this.initScrollAnimations();
+    }, 100);
+  }
+  
+  ngOnDestroy() {
+    // Limpiar todos los observers
+    this.scrollObservers.forEach(observer => observer.disconnect());
+    this.scrollObservers = [];
+  }
+  
+  /**
+   * Inicializa las animaciones de scroll para secciones y textos
+   */
+  private initScrollAnimations() {
+    this.initSectionAnimations();
+    this.initTextAnimations();
+  }
+  
+  /**
+   * Animación para secciones (fade + slide up)
+   */
+  private initSectionAnimations() {
+    // Excluimos hero-section y main-product-section (tiene background-attachment: fixed)
+    const sections = document.querySelectorAll('.section:not(.hero-section):not(.main-product-section)');
+    
+    sections.forEach((section: any) => {
+      // Estado inicial
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(30px)';
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Scroll hacia abajo: aparecer
+            animate(section, {
+              opacity: [0, 1],
+              translateY: [30, 0],
+              duration: 800,
+              easing: 'easeOutExpo'
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+      });
+      
+      observer.observe(section);
+      this.scrollObservers.push(observer);
+    });
+  }
+  
+  /**
+   * Animación para textos (títulos h1, h2 y descripciones p)
+   */
+  private initTextAnimations() {
+    // Seleccionar títulos y descripciones dentro de secciones (excluyendo hero-section)
+    const texts = document.querySelectorAll('.section:not(.hero-section) h1, .section:not(.hero-section) h2, .section:not(.hero-section) p');
+    
+    texts.forEach((text: any) => {
+      // Estado inicial
+      text.style.opacity = '0';
+      text.style.transform = 'translateY(20px)';
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Scroll hacia abajo: aparecer
+            animate(text, {
+              opacity: [0, 1],
+              translateY: [20, 0],
+              duration: 700,
+              easing: 'easeOutCubic'
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -50px 0px'
+      });
+      
+      observer.observe(text);
+      this.scrollObservers.push(observer);
+    });
   }
 
   // --- Lightbox de la galería estática ---
