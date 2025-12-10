@@ -9,7 +9,7 @@
         <div class="hero-content text-center">
           <h1 class="hero-title">MATEA</h1>
           <p class="hero-subtitle">El bolso de mate reinventado</p>
-          <a routerLink="/waitlist" class="btn btn-light btn-lg">Suscríbete para acceso anticipado</a>
+          <a routerLink="/home/product-sale" class="btn btn-light btn-lg">Comprar ahora</a>
         </div>
       </div>
       <div class="col-lg-6 col-md-12">
@@ -30,22 +30,16 @@
       <div class="col-12">
         <div class="gallery-grid">
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-1.jpg"
-                 alt="MATEA Bag 1"
-                 class="img-fluid"
-                 (click)="openLightbox('assets/carrusel/imagen-1.jpg', 'MATEA Bag 1')">
+            <img src="assets/carrusel/imagen-1.jpg" alt="MATEA Bag 1" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-1.jpg', 'MATEA Bag 1')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-2.jpg"
-                 alt="MATEA Bag 2"
-                 class="img-fluid"
-                 (click)="openLightbox('assets/carrusel/imagen-2.jpg', 'MATEA Bag 2')">
+            <img src="assets/carrusel/imagen-2.jpg" alt="MATEA Bag 2" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-2.jpg', 'MATEA Bag 2')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-3.jpg"
-                 alt="MATEA Bag 3"
-                 class="img-fluid"
-                 (click)="openLightbox('assets/carrusel/imagen-3.jpg', 'MATEA Bag 3')">
+            <img src="assets/carrusel/imagen-3.jpg" alt="MATEA Bag 3" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-3.jpg', 'MATEA Bag 3')">
           </div>
         </div>
       </div>
@@ -54,11 +48,10 @@
 </section>
 
 <!-- Lightbox para la galería estática -->
-<div class="image-lightbox-backdrop"
-     *ngIf="lightboxImage"
-     (click)="closeLightbox()">
+<div class="image-lightbox-backdrop" *ngIf="lightboxImage" (click)="closeLightbox()">
   <div class="image-lightbox" (click)="$event.stopPropagation()">
     <img [src]="lightboxImage!.src" [alt]="lightboxImage!.alt">
+    <img [src]="'assets/logos/M-single.png'" [alt]="'MATEA'" class="logo-lightbox">
   </div>
 </div>
 
@@ -91,21 +84,15 @@
       <div class="col-12">
         <div class="product-carousel">
           <div class="carousel-container">
-            <div class="carousel-track" 
-                 (mousedown)="onMouseDown($event)"
-                 (mousemove)="onMouseMove($event)"
-                 (mouseup)="onMouseUp()"
-                 (mouseleave)="onMouseUp()"
-                 (touchstart)="onTouchStart($event)"
-                 (touchmove)="onTouchMove($event)"
-                 (touchend)="onTouchEnd()"
-                 (wheel)="onWheel($event)">
+            <div class="carousel-track" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"
+              (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()" (touchstart)="onTouchStart($event)"
+              (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (wheel)="onWheel($event)">
               <!-- Tarjeta 1 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Todo en su sitio</h4>
                   <p>
-                    Interior diseñado específicamente para tu equipo matero. 
+                    Interior diseñado específicamente para tu equipo matero.
                     Cada elemento tiene su lugar sin comprometer el estilo.
                   </p>
                 </div>
@@ -113,13 +100,13 @@
                   <img src="assets/cards/yerbero.png" alt="Interior organizado MATEA">
                 </div>
               </div>
-              
+
               <!-- Tarjeta 2 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>No es un accesorio, es parte de la experiencia</h4>
                   <p>
-                    Yerbera extraíble y elegante que se integra al bolso. 
+                    Yerbera extraíble y elegante que se integra al bolso.
                     Un detalle invisible para otros, imprescindible para vos.
                   </p>
                 </div>
@@ -127,13 +114,13 @@
                   <img src="assets/cards/bombilla.png" alt="Yerbera integrada MATEA">
                 </div>
               </div>
-              
+
               <!-- Tarjeta 3 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>El detalle que cambia todo</h4>
                   <p>
-                    Compartimentos pensados para que el mate esté siempre a mano. 
+                    Compartimentos pensados para que el mate esté siempre a mano.
                     Cuando no lo usás, el bolso sigue siendo puro diseño.
                   </p>
                 </div>
@@ -141,13 +128,13 @@
                   <img src="assets/cards/cuerda.png" alt="Detalle del bolso MATEA">
                 </div>
               </div>
-              
+
               <!-- Tarjeta 4 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Listo para la ciudad</h4>
                   <p>
-                    Asas y correas pensadas para acompañar tu ritmo urbano, 
+                    Asas y correas pensadas para acompañar tu ritmo urbano,
                     sin perder la esencia del ritual.
                   </p>
                 </div>
@@ -155,13 +142,13 @@
                   <img src="assets/carrusel/imagen-1.jpg" alt="MATEA en la ciudad">
                 </div>
               </div>
-              
+
               <!-- Tarjeta 5 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Materiales que cuentan una historia</h4>
                   <p>
-                    Texturas, costuras y brillos pensados para durar años 
+                    Texturas, costuras y brillos pensados para durar años
                     y acompañar cada ronda de mate.
                   </p>
                 </div>
@@ -169,13 +156,13 @@
                   <img src="assets/carrusel/imagen-2.jpg" alt="Materiales MATEA">
                 </div>
               </div>
-              
+
               <!-- Tarjeta 6 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Siempre listo para salir</h4>
                   <p>
-                    Un bolso que se adapta a tu agenda: del día a día a las 
+                    Un bolso que se adapta a tu agenda: del día a día a las
                     ocasiones especiales sin cambiar de compañero.
                   </p>
                 </div>
@@ -186,7 +173,7 @@
 
             </div>
           </div>
-          
+
           <!-- Indicadores -->
           <div class="carousel-indicators ">
             <span class="indicator active" (click)="goToSlide(0)"></span>
@@ -208,7 +195,7 @@
     <div class="row">
       <div class="col-12 text-center">
         <h2>Cada cosa en su lugar. Cada momento, impecable.</h2>
-        <a routerLink="/waitlist" class="btn btn-primary">Sé la primera en tenerlo</a>
+        <a routerLink="/home/product-sale" class="btn btn-primary">Sé la primera en tenerlo</a>
       </div>
     </div>
   </div>
@@ -219,9 +206,7 @@
     <div class="row align-items-center">
       <div class="col-lg-6 col-md-12">
         <div class="video-media">
-          <video autoplay muted loop playsinline
-                 src="assets/principales/video-section.mp4"
-                 class="hero-bg-video">
+          <video autoplay muted loop playsinline src="assets/principales/video-section.mp4" class="hero-bg-video">
           </video>
         </div>
       </div>
@@ -233,7 +218,7 @@
             Extraíble, elegante y práctico: lo usás cuando lo necesitás y desaparece
             cuando no. MATEA entiende que cada detalle debe adaptarse a vos.
           </p>
-          <a routerLink="/waitlist" class="btn video-btn">Comprar</a>
+          <a routerLink="/home/product-sale" class="btn video-btn">Comprar</a>
         </div>
       </div>
     </div>

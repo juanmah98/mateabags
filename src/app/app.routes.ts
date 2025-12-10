@@ -20,6 +20,11 @@ export const routes: Routes = [
     loadComponent: () => import('./routes/home/login/login.component').then(m => m.LoginComponent)
   },
   {
+    path: 'home/product-sale',
+    loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: '**',
     redirectTo: ''
   }

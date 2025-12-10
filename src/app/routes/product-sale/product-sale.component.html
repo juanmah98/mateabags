@@ -1,0 +1,105 @@
+<div class="product-sale-container section-light">
+    <div class="container-fluid">
+        <div class="row align-items-start">
+            <!-- Left Column: Images -->
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="main-image-container mb-3">
+                    <!-- Using placeholder if image fails to load or using a known reliable placeholder service -->
+                    <img [src]="selectedImage" alt="{{product.title}}" class="img-fluid main-image"
+                        onerror="this.src='https://placehold.co/800x600/E8E8E0/3F4C3C?text=Bag+Image'">
+                </div>
+                <div class="thumbnails-container d-flex gap-3">
+                    @for (img of images; track img) {
+                    <div class="thumbnail-wrapper" [class.active]="selectedImage === img" (click)="selectImage(img)">
+                        <img [src]="img" alt="Thumbnail" class="img-fluid"
+                            onerror="this.src='https://placehold.co/150x150/E8E8E0/3F4C3C?text=Thumb'">
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right Column: Product Details -->
+            <div class="col-lg-6 ps-lg-5">
+                <div class="product-info-sticky">
+                    <h4 class="text-uppercase ls-2 mb-2 subtitle">{{product.subtitle}}</h4>
+                    <h1 class="display-4 fw-bold mb-4 product-title">{{product.title}}</h1>
+
+                    <p class="description mb-4">
+                        {{product.description}}
+                    </p>
+
+                    <div class="price-container mb-4">
+                        <span class="fs-1 fw-bold">{{product.price}}{{product.currency}}</span>
+                    </div>
+
+                    <div class="color-selection mb-4">
+                        <h5 class="text-uppercase mb-3 fs-6 ls-1">Color</h5>
+                        <div class="color-option selected">
+                            <span class="color-circle" title="Verde matea"
+                                [style.background-color]="selectedColor"></span>
+                        </div>
+                    </div>
+
+                    <div class="actions-container d-flex flex-wrap align-items-center gap-3 mb-5">
+                        <!-- Quantity Selector -->
+                        <div class="quantity-selector d-flex align-items-center">
+                            <button class="btn btn-outline-secondary" (click)="decrementQuantity()">-</button>
+                            <input type="text" [value]="quantity" readonly class="form-control text-center mx-2"
+                                style="width: 50px; border: none; background: transparent;">
+                            <button class="btn btn-outline-secondary" (click)="incrementQuantity()">+</button>
+                        </div>
+
+                        <!-- Buy Button -->
+                        <button class="btn btn-primary btn-lg flex-grow-1 text-uppercase ls-1">Comprar Ya</button>
+                    </div>
+
+                    <!-- Trust Signals -->
+                    <div class="trust-signals d-flex justify-content-between text-muted small mb-5">
+                        <div class="signal d-flex align-items-center gap-2">
+                            <i class="fs-5"><img src="assets/icons/truck-outline.svg" width="24" height="24" alt=""></i>
+                            <span>Envio rapido y seguro</span>
+                        </div>
+                        <div class="signal d-flex align-items-center gap-2">
+                            <i class="fs-5"><img src="assets/icons/shield-outline.svg" width="24" height="24"
+                                    alt=""></i>
+                            <span>Compra asegurada</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Tabs -->
+        <div class="row mt-5 pt-5 border-top">
+            <div class="col-12 text-center">
+                <div class="tabs-header mb-4 d-flex justify-content-center gap-5">
+                    <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
+                        [class.active]="activeTab === 'descripcion'" (click)="setActiveTab('descripcion')">
+                        Descripcion
+                    </button>
+                    <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
+                        [class.active]="activeTab === 'informacion'" (click)="setActiveTab('informacion')">
+                        Informacion
+                    </button>
+                    <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
+                        [class.active]="activeTab === 'resenas'" (click)="setActiveTab('resenas')">
+                        Reseñas
+                    </button>
+                </div>
+
+                <div class="tab-content py-4">
+                    @if (activeTab === 'descripcion') {
+                    <p>Detalles adicionales sobre la descripción del producto irían aquí.</p>
+                    }
+                    @if (activeTab === 'informacion') {
+                    <p>Información técnica y especificaciones del producto.</p>
+                    }
+                    @if (activeTab === 'resenas') {
+                    <p>Opiniones de nuestros clientes.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
