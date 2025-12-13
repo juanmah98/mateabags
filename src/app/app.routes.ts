@@ -56,7 +56,12 @@ export const routes: Routes = [
       {
         path: 'emails',
         loadComponent: () => import('./routes/admin/admin-emails/admin-emails.component').then(m => m.AdminEmailsComponent)
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./routes/admin/admin-products/admin-products.component').then(m => m.AdminProductsComponent)
       }
+
     ]
   },
   {

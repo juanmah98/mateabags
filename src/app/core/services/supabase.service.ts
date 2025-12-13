@@ -11,6 +11,8 @@ export interface WaitlistEntry {
   created_at?: string;
 }
 
+import { Product, ProductDTO } from '../../models/product.model';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -212,6 +214,91 @@ export class SupabaseService {
     } catch (error) {
       console.error('Error fetching waitlist chart data:', error);
       return { data: null, error };
+    }
+  }
+
+  // Product Methods
+
+  async getProducts(): Promise<{ data: Product[] | null, error: any }> {
+    try {
+      const { data, error } = await this.supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return { data: null, error };
+    }
+  }
+
+  async getProductById(id: string): Promise<{ data: Product | null, error: any }> {
+    try {
+      const { data, error } = await this.supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      return { data: null, error };
+    }
+  }
+
+  async createProduct(product: ProductDTO): Promise<{ data: Product | null, error: any }> {
+    try {
+      const { data, error } = await this.supabase
+        .from('products')
+        .insert([product])
+        .select()
+        .single();
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error creating product:', error);
+      return { data: null, error };
+    }
+  }
+
+  async updateProduct(id: string, product: ProductDTO): Promise<{ data: Product | null, error: any }> {
+    try {
+      const { data, error } = await this.supabase
+        .from('products')
+        .update(product)
+        .eq('id', id)
+        .select()
+        .single();
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error updating product:', error);
+      return { data: null, error };
+    }
+  }
+
+  async deleteProduct(id: string): Promise<{ error: any }> {
+    try {
+      // Opción 1: Borrado físico
+      const { error } = await this.supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      // Opción 2: Borrado lógico (soft delete) - Descomentar si se prefiere
+      /*
+      const { error } = await this.supabase
+        .from('products')
+        .update({ active: false })
+        .eq('id', id);
+      */
+
+      return { error };
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      return { error };
     }
   }
 }

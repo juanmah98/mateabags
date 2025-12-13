@@ -1,0 +1,132 @@
+<div class="admin-products">
+    <div class="header-actions">
+        <h2>Productos</h2>
+        <button class="btn-primary" (click)="openCreateModal()">
+            <i class="fas fa-plus"></i> Nuevo Producto
+        </button>
+    </div>
+
+    <div class="products-grid" *ngIf="!isLoading; else loadingTpl">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products">
+                        <td>{{ product.sku || '-' }}</td>
+                        <td>
+                            <div class="product-info">
+                                <span class="product-name">{{ product.title }}</span>
+                                <small class="product-desc" *ngIf="product.description">{{ product.description |
+                                    slice:0:50 }}{{ product.description && product.description.length > 50 ? '...' : ''
+                                    }}</small>
+                            </div>
+                        </td>
+                        <td>{{ product.price | currency:(product.currency || 'EUR') }}</td>
+                        <td>
+                            <span [class.stock-low]="(product.stock || 0) < 10"
+                                [class.stock-out]="(product.stock || 0) === 0">
+                                {{ product.stock || 0 }} u.
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge" [class.active]="product.active"
+                                [class.inactive]="!product.active">
+                                {{ product.active ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <button class="btn-icon edit" (click)="openEditModal(product)" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-icon delete" (click)="deleteProduct(product.id)" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="products.length === 0">
+                        <td colspan="6" class="empty-state">
+                            No hay productos registrados.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <ng-template #loadingTpl>
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Cargando productos...</p>
+        </div>
+    </ng-template>
+
+    <!-- Modal -->
+    <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ isEditing ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+                <button class="close-btn" (click)="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sku">SKU</label>
+                            <input type="text" id="sku" formControlName="sku" placeholder="Ej. MATEA-ORIGIN">
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Nombre</label>
+                            <input type="text" id="title" formControlName="title" placeholder="Nombre del producto">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea id="description" formControlName="description" rows="3"
+                            placeholder="Descripción del producto"></textarea>
+                    </div>
+
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label for="price">Precio</label>
+                            <input type="number" id="price" formControlName="price" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Moneda</label>
+                            <select id="currency" formControlName="currency">
+                                <option *ngFor="let curr of currencies" [value]="curr">{{ curr }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Stock</label>
+                            <input type="number" id="stock" formControlName="stock" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox">
+                        <label>
+                            <input type="checkbox" formControlName="active">
+                            Producto Activo
+                        </label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+                        <button type="submit" class="btn-primary" [disabled]="productForm.invalid || isLoading">
+                            {{ isLoading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
