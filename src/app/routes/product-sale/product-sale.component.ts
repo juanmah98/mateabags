@@ -27,7 +27,7 @@ export class ProductSaleComponent {
   activeTab = 'descripcion';
 
   // Using a solid color for the implementation as seen in image
-  selectedColor = '#3F4C3C';
+  selectedColor = '#1C352D';
 
   constructor() { }
 
