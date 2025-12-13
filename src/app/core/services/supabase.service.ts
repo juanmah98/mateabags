@@ -142,5 +142,77 @@ export class SupabaseService {
       return null;
     }
   }
+
+  // Dashboard Methods
+
+  async getWaitlistCount(): Promise<number> {
+    try {
+      const { count, error } = await this.supabase
+        .from('waitlist')
+        .select('*', { count: 'exact', head: true });
+
+      return count || 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  async getCustomersCount(): Promise<number> {
+    try {
+      const { count, error } = await this.supabase
+        .from('customers')
+        .select('*', { count: 'exact', head: true });
+
+      return count || 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  async getOrdersCount(): Promise<number> {
+    try {
+      const { count, error } = await this.supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true });
+
+      return count || 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  async getPendingOrdersCount(): Promise<number> {
+    try {
+      const { count, error } = await this.supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+      return count || 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  async getWaitlistDataForChart(days: number): Promise<{ data: any[] | null, error: any }> {
+    try {
+      // Calcular fecha de inicio
+      const today = new Date();
+      const startDate = new Date(today);
+      startDate.setDate(today.getDate() - (days - 1));
+      startDate.setHours(0, 0, 0, 0);
+
+      const { data, error } = await this.supabase
+        .from('waitlist')
+        .select('created_at')
+        .gte('created_at', startDate.toISOString())
+        .order('created_at', { ascending: true });
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error fetching waitlist chart data:', error);
+      return { data: null, error };
+    }
+  }
 }
 

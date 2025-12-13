@@ -43,6 +43,8 @@ export interface OrderItemDTO {
     quantity: number;
     unit_price: number;
     total_price: number;
+    is_gift?: boolean;           // nuevo
+    gift_message?: string | null; // nuevo (máx. 100 chars)
 }
 
 /**

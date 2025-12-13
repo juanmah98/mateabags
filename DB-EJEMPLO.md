@@ -50,15 +50,17 @@
   },
   "order_items": [
     {
-      "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
-      "order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a",
-      "product_id": "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-      "title": "Producto inicial",
-      "sku": "SKU-PRIMERO",
-      "quantity": 1,
-      "unit_price": 49.90,
-      "total_price": 49.90
-    }
+  "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "order_id": "c9bf9e57-1685-4c89-bafb-ff5af830be8a",
+  "product_id": "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+  "title": "Producto inicial",
+  "sku": "SKU-PRIMERO",
+  "quantity": 1,
+  "unit_price": 49.90,
+  "total_price": 49.90,
+  "is_gift": true,
+  "gift_message": "Feliz cumpleaños, disfruta mucho :)"
+}
   ],
   "order_coupons": [],
   "payments": [

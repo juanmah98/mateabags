@@ -1,6 +1,9 @@
 .admin-container {
     min-height: 100vh;
-    background: #1a3a2e;
+    background: url('../../../../assets/principales/puntos-png.png') #1C352D;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -42,7 +45,7 @@
         h2 {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #1a3a2e;
+            color: #1C352D;
             text-align: center;
             letter-spacing: 0.5px;
             margin: 0;
@@ -68,11 +71,11 @@
 
             &:hover {
                 background: #e5e5e5;
-                color: #1a3a2e;
+                color: #1C352D;
             }
 
             &.active {
-                background: #1a3a2e;
+                background: #1C352D;
                 color: #f5f5f5;
                 font-weight: 600;
             }
