@@ -1,0 +1,49 @@
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <img src="assets/logos/M-single.png" alt="MATEA Logo" class="logo-img">
+        </div>
+
+        <h2 class="title">Panel de Administración</h2>
+        <p class="subtitle">Ingresa tus credenciales para acceder</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" formControlName="email"
+                    placeholder="admin@mateabags.com" [class.is-invalid]="email?.invalid && email?.touched" />
+                <div class="invalid-feedback" *ngIf="email?.invalid && email?.touched">
+                    <div *ngIf="email?.errors?.['required']">El email es obligatorio</div>
+                    <div *ngIf="email?.errors?.['email']">Email inválido</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" class="form-control" formControlName="password"
+                    placeholder="••••••••" [class.is-invalid]="password?.invalid && password?.touched" />
+                <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
+                    <div *ngIf="password?.errors?.['required']">La contraseña es obligatoria</div>
+                    <div *ngIf="password?.errors?.['minlength']">Mínimo 6 caracteres</div>
+                </div>
+            </div>
+
+            <div class="error-message" *ngIf="errorMessage">
+                <i class="bi bi-exclamation-circle"></i>
+                {{ errorMessage }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || isLoading">
+                <span *ngIf="!isLoading">Iniciar Sesión</span>
+                <span *ngIf="isLoading">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Iniciando...
+                </span>
+            </button>
+        </form>
+
+        <div class="footer-text">
+            <p>Mateabags © 2025</p>
+        </div>
+    </div>
+</div>

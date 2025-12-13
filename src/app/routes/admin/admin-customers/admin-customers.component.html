@@ -1,0 +1,35 @@
+<div class="customers-container">
+    <h2 class="page-title">Clientes</h2>
+
+    <div class="table-container" *ngIf="!isLoading && customers.length > 0">
+        <table class="customers-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>EMAIL</th>
+                    <th>TELÉFONO</th>
+                    <th>FECHA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let customer of customers; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ customer.name || '-' }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone || '-' }}</td>
+                    <td>{{ formatDate(customer.created_at) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && customers.length === 0">
+        <p>No hay clientes registrados aún</p>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+        <div class="spinner-border" role="status"></div>
+        <p>Cargando clientes...</p>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
+
 
 export interface WaitlistEntry {
   name: string;
@@ -33,17 +34,17 @@ export class SupabaseService {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convertir a entero de 32 bits
     }
-    
+
     // Usar el hash para generar un código de 6 caracteres
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
     let num = Math.abs(hash);
-    
+
     for (let i = 0; i < 6; i++) {
       code += chars[num % chars.length];
       num = Math.floor(num / chars.length);
     }
-    
+
     return code;
   }
 
@@ -70,7 +71,7 @@ export class SupabaseService {
     try {
       // Generar el código completo
       const codigo = this.generateFullCode(entry.name, entry.email);
-      
+
       const { data, error } = await this.supabase
         .from('waitlist')
         .insert([

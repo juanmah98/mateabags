@@ -1,0 +1,55 @@
+<div class="sales-container">
+    <h2 class="page-title">Ventas</h2>
+
+    <!-- Stats Summary -->
+    <div class="stats-row" *ngIf="!isLoading">
+        <div class="stat-badge">
+            <strong>{{ totalSales }}</strong> VENTAS
+        </div>
+        <div class="stat-badge shipped">
+            <strong>{{ shippedOrders }}</strong> ENVIADOS
+        </div>
+        <div class="stat-badge pending">
+            <strong>{{ pendingOrders }}</strong> PENDIENTES
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-container" *ngIf="!isLoading && orders.length > 0">
+        <table class="sales-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CLIENTE</th>
+                    <th>EMAIL</th>
+                    <th>TOTAL</th>
+                    <th>ESTADO</th>
+                    <th>FECHA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of orders; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ order.customer?.name || '-' }}</td>
+                    <td>{{ order.customer?.email || '-' }}</td>
+                    <td>{{ order.total_amount | number:'1.2-2' }} €</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                            {{ getStatusLabel(order.status) }}
+                        </span>
+                    </td>
+                    <td>{{ formatDate(order.created_at) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && orders.length === 0">
+        <p>No hay ventas registradas aún</p>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+        <div class="spinner-border" role="status"></div>
+        <p>Cargando ventas...</p>
+    </div>
+</div>
