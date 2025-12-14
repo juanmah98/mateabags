@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
 import { Product } from '../../models/product.model';
 
@@ -36,11 +37,16 @@ export class ProductSaleComponent implements OnInit {
 
   isLoading = true;
 
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.loadProduct();
   }
+
+  productId: string = ''; // Store the real ID
 
   async loadProduct() {
     this.isLoading = true;
@@ -57,6 +63,8 @@ export class ProductSaleComponent implements OnInit {
       // Tomamos el primer producto activo que encontremos
       // Idealmente, filtraríamos por SKU o un slug específico
       const activeProduct = data.find(p => p.active) || data[0];
+
+      this.productId = activeProduct.id; // Store ID!
 
       this.product = {
         title: activeProduct.title.toUpperCase(),
@@ -92,5 +100,20 @@ export class ProductSaleComponent implements OnInit {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  goToCheckout() {
+    this.router.navigate(['/checkout'], {
+      state: {
+        items: [{
+          id: this.productId, // Use real ID
+          title: this.product.title,
+          price: this.product.price,
+          quantity: this.quantity,
+          sku: 'MATEA-001', // Temporal
+          image: this.selectedImage
+        }]
+      }
+    });
   }
 }

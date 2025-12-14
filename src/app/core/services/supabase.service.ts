@@ -12,6 +12,10 @@ export interface WaitlistEntry {
 }
 
 import { Product, ProductDTO } from '../../models/product.model';
+import { CreateOrderPayload, CreateOrderResponse } from '../../models/checkout.model';
+import { CustomerDTO } from '../../models/customer.model';
+import { AddressDTO } from '../../models/address.model';
+import { OrderStatus } from '../../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -299,6 +303,156 @@ export class SupabaseService {
     } catch (error) {
       console.error('Error deleting product:', error);
       return { error };
+    }
+  }
+
+  // Clientes
+
+  async getCustomerByEmail(email: string) {
+    return this.supabase
+      .from('customers')
+      .select('*')
+      .eq('email', email)
+      .limit(1)
+      .maybeSingle();
+  }
+
+  async createCustomer(customer: CustomerDTO) {
+    return this.supabase
+      .from('customers')
+      .insert([customer])
+      .select()
+      .single();
+  }
+
+  // Direcciones
+
+  async createAddress(address: AddressDTO, customerId: string) {
+    return this.supabase
+      .from('addresses')
+      .insert([{ ...address, customer_id: customerId }])
+      .select()
+      .single();
+  }
+
+  // Order Flow
+
+  async createOrder(payload: CreateOrderPayload): Promise<{ data: CreateOrderResponse | null, error: any }> {
+    try {
+      // 1. Customer: Check if exists or create
+      let customerId: string;
+      const { data: existingCustomer } = await this.getCustomerByEmail(payload.customer.email);
+
+      if (existingCustomer) {
+        customerId = existingCustomer.id;
+        // Opcional: actualizar datos si es necesario
+      } else {
+        const { data: newCustomer, error: customerError } = await this.createCustomer(payload.customer);
+        if (customerError) throw customerError;
+        customerId = newCustomer.id;
+      }
+
+      // 2. Address
+      const { data: address, error: addressError } = await this.createAddress(payload.address, customerId);
+      if (addressError) throw addressError;
+
+      // 3. Order
+      const subtotal_amount = payload.items.reduce((sum, item) => sum + item.total_price, 0);
+      const total_amount = subtotal_amount + (payload.shipping_cost || 0); // Descuentos luego
+
+      const orderData = {
+        customer_id: customerId,
+        shipping_address_id: address.id,
+        subtotal_amount: subtotal_amount,
+        discount_amount: 0, // Por ahora 0
+        shipping_cost: payload.shipping_cost || 0,
+        total_amount: total_amount,
+        currency: payload.currency || 'EUR',
+        status: 'pending', // Inicialmente pending
+        note: payload.note
+      };
+
+      const { data: order, error: orderError } = await this.supabase
+        .from('orders')
+        .insert([orderData])
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // 4. Order Items
+      const itemsData = payload.items.map(item => ({
+        order_id: order.id,
+        product_id: item.product_id,
+        title: item.title,
+        sku: item.sku,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        total_price: item.total_price,
+        is_gift: item.is_gift,
+        gift_message: item.gift_message
+      }));
+
+      const { error: itemsError } = await this.supabase
+        .from('order_items')
+        .insert(itemsData);
+
+      if (itemsError) throw itemsError;
+
+      // 5. Simulate Payment (Mock) -> Update status to 'paid'
+      // En un flujo real, aquí iríamos a Stripe. Para la simulación, marcamos como pagado.
+      await this.supabase
+        .from('orders')
+        .update({ status: 'paid' }) // OrderStatus.PAID
+        .eq('id', order.id);
+
+      return {
+        data: {
+          order_id: order.id,
+          // Url ficticia por ahora
+          checkout_url: `/checkout/success/${order.id}`,
+          total_amount: total_amount
+        },
+        error: null
+      };
+
+    } catch (error) {
+      console.error('Error in createOrder sequence:', error);
+      return { data: null, error };
+    }
+  }
+  async getOrdersWithDetails() {
+    try {
+      const { data, error } = await this.supabase
+        .from('orders')
+        .select(`
+          *,
+          customer:customers (*),
+          shipping_address:addresses!shipping_address_id (*),
+          items:order_items (*)
+        `)
+        .order('created_at', { ascending: false });
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error fetching orders with details:', error);
+      return { data: null, error };
+    }
+  }
+
+  async updateOrderStatus(orderId: string, status: string) {
+    try {
+      const { data, error } = await this.supabase
+        .from('orders')
+        .update({ status })
+        .eq('id', orderId)
+        .select()
+        .single();
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      return { data: null, error };
     }
   }
 }

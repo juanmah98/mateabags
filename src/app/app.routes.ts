@@ -65,6 +65,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'checkout',
+    loadComponent: () => import('./routes/checkout/checkout.component').then(m => m.CheckoutComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

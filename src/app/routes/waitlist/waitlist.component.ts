@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
@@ -15,7 +15,8 @@ import { animate, stagger } from 'animejs';
 export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
   // FECHA OBJETIVO - Cambia esta fecha según necesites
   // Formato: año, mes (0-11), día, hora, minuto, segundo
-  targetDate: Date = new Date(2026, 1, 1, 23, 59, 59); // 01 de febrero de 2026, 23:59:59
+  targetDate: Date = new Date(2026, 0, 17, 20, 0, 0); // 01 de febrero de 2026, 23:59:59
+
 
   // Datos del formulario
   formData = {
@@ -43,6 +44,8 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.startCountdown();
+    const formattedDate = formatDate(this.targetDate, 'dd/MM/yyyy HH:mm:ss', 'en-US');
+    console.log(formattedDate);
   }
 
   ngAfterViewInit() {

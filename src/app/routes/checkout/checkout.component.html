@@ -1,0 +1,230 @@
+<div class="checkout-container">
+    <div class="container-fluid">
+
+        <!-- Success Message -->
+        <div *ngIf="isSuccess" class="success-message text-center py-5">
+            <div class="icon-circle mb-4">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="mb-3">¡Gracias por tu compra!</h2>
+            <p class="lead mb-4">Tu pedido ha sido procesado correctamente.</p>
+            <p class="text-muted mb-5">ID del pedido: <strong>{{ createdOrderId }}</strong></p>
+            <button class="btn btn-primary btn-lg" (click)="goToHome()">Volver a la tienda</button>
+        </div>
+
+        <!-- Checkout Form -->
+        <div *ngIf="!isSuccess" class="row">
+            <div class="col-lg-7">
+                <h2 class="mb-4 section-title">Finalizar Compra <small class="text-muted fs-6 ms-3">Paso {{currentStep}}
+                        de 4</small></h2>
+
+                <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+
+                    <!-- Paso 1: Datos Personales -->
+                    <div *ngIf="currentStep === 1">
+                        <div class="card mb-4" formGroupName="customer">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="far fa-user me-2"></i> Datos de Contacto</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" formControlName="name"
+                                        [class.is-invalid]="checkoutForm.get('customer.name')?.invalid && checkoutForm.get('customer.name')?.touched">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" formControlName="email"
+                                            [class.is-invalid]="checkoutForm.get('customer.email')?.invalid && checkoutForm.get('customer.email')?.touched">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" formControlName="phone"
+                                            [class.is-invalid]="checkoutForm.get('customer.phone')?.invalid && checkoutForm.get('customer.phone')?.touched">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100 py-3" (click)="nextStep()">Siguiente:
+                            Dirección de Envío</button>
+                    </div>
+
+                    <!-- Paso 2: Dirección de Envío -->
+                    <div *ngIf="currentStep === 2">
+                        <div class="card mb-4" formGroupName="address">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> Dirección de Envío</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Dirección (Calle y número)</label>
+                                    <input type="text" class="form-control" formControlName="line1"
+                                        [class.is-invalid]="checkoutForm.get('address.line1')?.invalid && checkoutForm.get('address.line1')?.touched">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Piso / Puerta (Opcional)</label>
+                                    <input type="text" class="form-control" formControlName="line2">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ciudad</label>
+                                        <input type="text" class="form-control" formControlName="city"
+                                            [class.is-invalid]="checkoutForm.get('address.city')?.invalid && checkoutForm.get('address.city')?.touched">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Provincia/Estado</label>
+                                        <input type="text" class="form-control" formControlName="state"
+                                            [class.is-invalid]="checkoutForm.get('address.state')?.invalid && checkoutForm.get('address.state')?.touched">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Código Postal</label>
+                                        <input type="text" class="form-control" formControlName="postcode"
+                                            [class.is-invalid]="checkoutForm.get('address.postcode')?.invalid && checkoutForm.get('address.postcode')?.touched">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">País</label>
+                                        <select class="form-select" formControlName="country">
+                                            <option value="ES">España</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary flex-fill py-3"
+                                (click)="prevStep()">Atrás</button>
+                            <button type="button" class="btn btn-primary flex-fill py-3" (click)="nextStep()">Siguiente:
+                                Regalo</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: Opciones de Regalo -->
+                    <div *ngIf="currentStep === 3">
+                        <div class="card mb-4" formGroupName="gift">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="fas fa-gift me-2"></i> Opciones de Regalo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="isGift"
+                                        formControlName="is_gift">
+                                    <label class="form-check-label" for="isGift">
+                                        ¿Es para regalo?
+                                    </label>
+                                </div>
+                                <div class="mb-3" *ngIf="checkoutForm.get('gift.is_gift')?.value">
+                                    <label class="form-label">Mensaje personalizado</label>
+                                    <textarea class="form-control" rows="3" formControlName="gift_message"
+                                        placeholder="Escribe tu dedicatoria aquí..." maxlength="500"></textarea>
+                                    <small class="text-muted">Máx. 500 caracteres.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary flex-fill py-3"
+                                (click)="prevStep()">Atrás</button>
+                            <button type="button" class="btn btn-primary flex-fill py-3" (click)="nextStep()">Siguiente:
+                                Pago</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 4: Simulación de Pago -->
+                    <div *ngIf="currentStep === 4">
+                        <div class="card mb-4" formGroupName="payment">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="far fa-credit-card me-2"></i> Método de Pago (Simulación)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info small mb-3">
+                                    <i class="fas fa-info-circle me-1"></i> Modo prueba: Puedes usar cualquier dato
+                                    ficticio.
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre en la tarjeta</label>
+                                    <input type="text" class="form-control" formControlName="cardName"
+                                        placeholder="Como aparece en la tarjeta">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Número de tarjeta</label>
+                                    <input type="text" class="form-control" formControlName="cardNumber"
+                                        placeholder="0000 0000 0000 0000" maxlength="16">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de expiración</label>
+                                        <input type="text" class="form-control" formControlName="expiry"
+                                            placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" formControlName="cvv" placeholder="123"
+                                            maxlength="3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary flex-fill py-3"
+                                (click)="prevStep()">Atrás</button>
+                            <button type="submit" class="btn btn-primary flex-fill py-3"
+                                [disabled]="checkoutForm.invalid || isLoading">
+                                {{ isLoading ? 'Procesando...' : 'Pagar ' + (total | currency:'EUR') }}
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Resumen de Pedido (Sidebar) -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm " style="top: 20px;">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Resumen del Pedido</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3"
+                                *ngFor="let item of cartItems">
+                                <div class="d-flex align-items-center">
+                                    <!-- Imagen Placeholder si no hay imagen real -->
+                                    <div class="bg-light rounded me-3"
+                                        style="width: 50px; height: 50px; background-size: cover; background-position: center;"
+                                        [style.background-image]="'url(' + (item.image || 'assets/placeholder.jpg') + ')'">
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-truncate" style="max-width: 150px;">{{ item.title }}</h6>
+                                        <small class="text-muted">Cant: {{ item.quantity }}</small>
+                                    </div>
+                                </div>
+                                <span class="text-nowrap">{{ (item.price * item.quantity) | currency:'EUR' }}</span>
+                            </li>
+                            <li class="list-group-item py-3" *ngIf="cartItems.length === 0">
+                                <p class="text-center text-muted mb-0">No hay productos seleccionados.</p>
+                            </li>
+                        </ul>
+                        <div class="p-4 bg-light">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal</span>
+                                <span>{{ subtotal | currency:'EUR' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted">Envío</span>
+                                <span>{{ shippingCost | currency:'EUR' }}</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Total</h5>
+                                <h4 class="mb-0 text-total">{{ total | currency:'EUR' }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
