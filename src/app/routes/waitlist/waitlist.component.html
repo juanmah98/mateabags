@@ -45,30 +45,15 @@
         <div class="waitlist-form">
           <form (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <input 
-                type="text" 
-                class="form-control" 
-                placeholder="Nombre" 
-                required 
-                [(ngModel)]="formData.nombre" 
-                name="nombre"
-                [disabled]="isSubmitting">
+              <input type="text" class="form-control" placeholder="Nombre" required [(ngModel)]="formData.nombre"
+                name="nombre" [disabled]="isSubmitting">
             </div>
             <div class="form-group">
-              <input 
-                type="email" 
-                class="form-control" 
-                placeholder="Correo electrónico" 
-                required 
-                [(ngModel)]="formData.email" 
-                name="email"
-                [disabled]="isSubmitting">
+              <input type="email" class="form-control" placeholder="Correo electrónico" required
+                [(ngModel)]="formData.email" name="email" [disabled]="isSubmitting">
             </div>
             <div class="form-group">
-              <button 
-                type="submit" 
-                class="btn btn-submit"
-                [disabled]="isSubmitting">
+              <button type="submit" class="btn btn-submit" [disabled]="isSubmitting">
                 <span *ngIf="!isSubmitting">Unirme a la lista privada</span>
                 <span *ngIf="isSubmitting">Enviando...</span>
               </button>

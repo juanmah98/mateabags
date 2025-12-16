@@ -185,3 +185,17 @@ ON CONFLICT (sku) DO NOTHING;
 -- 3) Guarda el payload crudo de Stripe en stripe_events y en payments.stripe_raw para conciliación.
 
 -- Si quieres que genere también las políticas RLS recomendadas (SQL) lo agrego al archivo.
+
+-- Añadir campos para gift a order_items
+ALTER TABLE order_items
+  ADD COLUMN is_gift boolean DEFAULT false NOT NULL,
+  ADD COLUMN gift_message text;
+
+-- Limitar longitud del mensaje (ej. máximo 500 caracteres)
+ALTER TABLE order_items
+  ADD CONSTRAINT order_items_gift_message_length CHECK (gift_message IS NULL OR char_length(gift_message) <= 500);
+
+-- Índice opcional si vas a filtrar/listar pedidos con regalo
+CREATE INDEX IF NOT EXISTS idx_order_items_is_gift ON order_items(is_gift);
+
+Nota: is_gift se crea con DEFAULT false y NOT NULL, por lo que las filas existentes quedarán con false. gift_message queda NULL por defecto.
