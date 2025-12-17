@@ -26,6 +26,23 @@ export const routes: Routes = [
     loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent),
     canActivate: [homeDateGuard]
   },
+  // Legal routes
+  {
+    path: 'privacy-policy',
+    loadComponent: () => import('./routes/legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
+  },
+  {
+    path: 'terms-conditions',
+    loadComponent: () => import('./routes/legal/terms-conditions/terms-conditions.component').then(m => m.TermsConditionsComponent)
+  },
+  {
+    path: 'cookie-policy',
+    loadComponent: () => import('./routes/legal/cookie-policy/cookie-policy.component').then(m => m.CookiePolicyComponent)
+  },
+  {
+    path: 'legal-notice',
+    loadComponent: () => import('./routes/legal/legal-notice/legal-notice.component').then(m => m.LegalNoticeComponent)
+  },
   // Admin routes
   {
     path: 'admin/login',

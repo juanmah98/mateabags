@@ -29,7 +29,7 @@ body {
   font-family: 'Open Sans', sans-serif;
   line-height: 1.6;
   color: var(--color-text-dark);
-  background-color: var(--color-primary);
+  background-color: white;
 }
 
 h1,
@@ -75,13 +75,13 @@ p {
   font-weight: 500;
   padding: 12px 30px;
   border-radius: 25px;
-  text-decoration: none;
+  text-decoration: none !important;
   display: inline-block;
   transition: all 0.3s ease;
 
   &:hover {
     background-color: color.adjust(#1C352D, $lightness: -10%);
-    border-color: color.adjust(#3F4C3C, $lightness: -10%);
+    border-color: color.adjust(#1C352D, $lightness: -10%);
     color: var(--color-text-light);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(63, 76, 60, 0.3);

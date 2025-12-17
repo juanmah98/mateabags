@@ -22,6 +22,10 @@ export class CookieConsentService {
 
     private consentSubject = new BehaviorSubject<CookieConsent>(this.DEFAULT_CONSENT);
     public consent$ = this.consentSubject.asObservable();
+
+    private showSettingsSubject = new BehaviorSubject<boolean>(false);
+    public showSettings$ = this.showSettingsSubject.asObservable();
+
     private isBrowser: boolean;
 
     constructor(@Inject(PLATFORM_ID) platformId: Object) {
@@ -84,5 +88,9 @@ export class CookieConsentService {
     public hasUserInteracted(): boolean {
         if (!this.isBrowser) return false;
         return !!localStorage.getItem(this.STORAGE_KEY);
+    }
+
+    public showSettingsModal(): void {
+        this.showSettingsSubject.next(true);
     }
 }

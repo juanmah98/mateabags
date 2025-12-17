@@ -23,6 +23,13 @@ export class CookieBannerComponent implements OnInit {
     constructor(private cookieService: CookieConsentService) { }
 
     ngOnInit(): void {
+        // Subscribe to settings trigger
+        this.cookieService.showSettings$.subscribe(show => {
+            if (show) {
+                this.openConfig();
+            }
+        });
+
         // Check if user has already interacted
         if (!this.cookieService.hasUserInteracted()) {
             // Delay slightly for better UX

@@ -355,7 +355,7 @@ body {
   }
 
   .video-copy {
-    color: #F7F4EE;
+    color: #fff;
     padding-left: 40px;
 
     .video-title {
@@ -377,7 +377,7 @@ body {
     }
 
     .video-btn {
-      background-color: #F7F4EE;
+      background-color: #fff;
       color: #1C352D;
       border-radius: 999px;
       padding: 12px 40px;
@@ -391,7 +391,7 @@ body {
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-        background-color: #ffffff;
+        background-color: #F7F4EE;
       }
 
       &:active {
