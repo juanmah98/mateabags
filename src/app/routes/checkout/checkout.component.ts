@@ -68,6 +68,10 @@ export class CheckoutComponent implements OnInit {
   get giftForm() { return this.checkoutForm.get('gift') as FormGroup; }
   get paymentForm() { return this.checkoutForm.get('payment') as FormGroup; }
 
+  get progressPercentage(): number {
+    return (this.currentStep / 4) * 100;
+  }
+
   ngOnInit(): void {
     // Si no hay items (acceso directo por URL), redirigir
     /* 

@@ -1,16 +1,22 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { StorageService } from '../services/storage.service';
+import { LaunchService } from '../services/launch.service';
 
 /**
  * Guard temporal para el home
  * Protege el acceso hasta una fecha específica usando una clave temporal
- * Este guard NO es para autenticación de usuarios, solo para controlar
- * el acceso hasta el lanzamiento oficial
+ * O permite el acceso libre si ya se ha lanzado
  */
 export const homeDateGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
     const storageService = inject(StorageService);
+    const launchService = inject(LaunchService);
+
+    // Si ya se lanzó, permitir acceso libre
+    if (launchService.isLaunched()) {
+        return true;
+    }
 
     // Verificar si ya tiene la clave de acceso temporal guardada
     const storedKey = storageService.getSessionItem<string>('home_access_key');

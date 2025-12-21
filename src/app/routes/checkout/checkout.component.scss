@@ -10,6 +10,25 @@
     font-weight: 700;
 }
 
+.progress-container {
+    .progress {
+        height: 15px;
+        border-radius: 15px;
+        background-color: #e5e7eb;
+        overflow: hidden;
+
+        .progress-bar {
+            background-color: #1C352D;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: width 0.4s ease;
+        }
+    }
+}
+
 .card {
     border: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -74,6 +93,25 @@
         transform: none;
     }
 }
+
+.btn-outline-primary {
+    background-color: transparent;
+    border-color: #1C352D;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    color: #1C352D;
+    border-radius: 25px;
+
+    &:hover {
+        background-color: (#1C352D);
+        border-color: (#1C352D);
+        transform: translateY(-1px);
+        color: #fff;
+    }
+
+}
+
 
 .icon-circle {
     width: 80px;

@@ -2,15 +2,18 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { homeDateGuard } from './core/guards/home-date.guard';
+import { waitlistGuard } from './core/guards/waitlist.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent)
+    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent),
+    canActivate: [waitlistGuard]
   },
   {
     path: 'waitlist',
-    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent)
+    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent),
+    canActivate: [waitlistGuard]
   },
   {
     path: 'home',

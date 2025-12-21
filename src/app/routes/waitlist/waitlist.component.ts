@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
 import { animate, stagger } from 'animejs';
 
+import { LaunchService } from '../../core/services/launch.service';
+
 @Component({
   selector: 'app-waitlist',
   standalone: true,
@@ -13,10 +15,8 @@ import { animate, stagger } from 'animejs';
   styleUrl: './waitlist.component.scss'
 })
 export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
-  // FECHA OBJETIVO - Cambia esta fecha según necesites
-  // Formato: año, mes (0-11), día, hora, minuto, segundo
-  targetDate: Date = new Date(2026, 0, 17, 20, 0, 0); // 01 de febrero de 2026, 23:59:59
-
+  // FECHA OBJETIVO - Ahora viene del servicio
+  targetDate: Date;
 
   // Datos del formulario
   formData = {
@@ -40,7 +40,12 @@ export class WaitlistComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private countdownInterval: any;
   private errorTimeoutId?: ReturnType<typeof setTimeout>;
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private launchService: LaunchService
+  ) {
+    this.targetDate = this.launchService.targetDate;
+  }
 
   ngOnInit() {
     this.startCountdown();
