@@ -1,15 +1,143 @@
 <div class="checkout-container">
     <div class="container">
 
-        <!-- Success Message -->
-        <div *ngIf="isSuccess" class="success-message text-center py-5">
-            <div class="icon-circle mb-4">
-                <i class="fas fa-check"></i>
+        <!-- Order Receipt -->
+        <div *ngIf="isSuccess" class="receipt-wrapper">
+            <div id="order-receipt" class="receipt-container">
+                <!-- Header -->
+                <div class="receipt-header text-center mb-4">
+                    <div class="icon-circle mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h2 class="mb-2">¡Pedido Confirmado!</h2>
+                    <p class="text-muted">Gracias por tu compra en Mateabags</p>
+                </div>
+
+                <!-- Order Info -->
+                <div class="receipt-section mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>ID del Pedido:</strong></p>
+                            <p class="text-muted">#{{ orderHashCode }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="mb-1"><strong>Fecha:</strong></p>
+                            <p class="text-muted">{{ orderDate | date:'dd/MM/yyyy' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Customer Information -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-person-fill me-2"></i>Datos del Cliente</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Nombre:</p>
+                            <p class="mb-3">{{ orderData?.customer?.name }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Email:</p>
+                            <p class="mb-3">{{ orderData?.customer?.email }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Teléfono:</p>
+                            <p class="mb-3">{{ orderData?.customer?.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Dirección de Envío</h5>
+                    <p class="mb-1">
+                        {{ orderData?.address?.street }} {{ orderData?.address?.number }}<span *ngIf="orderData?.address?.floor || orderData?.address?.door">, {{ 'Piso ' + orderData?.address?.floor }}<span *ngIf="orderData?.address?.door"> {{ 'Puerta ' + orderData?.address?.door }}</span></span>
+                    </p>
+                    <p class="mb-1">{{ orderData?.address?.postcode }} {{ orderData?.address?.town }}</p>
+                    <p class="mb-1">{{ orderData?.address?.city }}, {{ orderData?.address?.country }}</p>
+                    <p class="mb-0" *ngIf="orderData?.address?.extraInstructions"><small class="text-muted"><i class="bi bi-info-circle me-1"></i>{{ orderData?.address?.extraInstructions }}</small></p>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Products Table -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-bag-fill me-2"></i>Productos</h5>
+                    <div class="table-responsive">
+                        <table class="table receipt-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio Unit.</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of completedItems">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="product-thumb me-3" 
+                                                 [style.background-image]="'url(' + (item.image || 'assets/placeholder.jpg') + ')'">
+                                            </div>
+                                            <div>
+                                                <strong>{{ item.title }}</strong>
+                                                <br>
+                                                <small class="text-muted" *ngIf="item.sku">SKU: {{ item.sku }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">{{ item.quantity }}</td>
+                                    <td class="text-end align-middle">{{ item.price | currency:'EUR' }}</td>
+                                    <td class="text-end align-middle"><strong>{{ (item.price * item.quantity) | currency:'EUR' }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="receipt-totals">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>{{ subtotal | currency:'EUR' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Gastos de envío:</span>
+                        <span>{{ shippingCost | currency:'EUR' }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between total-amount">
+                        <strong>Total:</strong>
+                        <strong>{{ total | currency:'EUR' }}</strong>
+                    </div>
+                </div>
+
+                <!-- Gift Message -->
+                <div class="receipt-section mt-4" *ngIf="orderData?.gift?.is_gift && orderData?.gift?.gift_message">
+                    <div class="alert alert-info">
+                        <h6 class="mb-2"><i class="bi bi-gift-fill me-2"></i>Mensaje de Regalo</h6>
+                        <p class="mb-0 fst-italic">"{{ orderData?.gift?.gift_message }}"</p>
+                    </div>
+                </div>
+
+                <!-- Footer Note -->
+                <div class="receipt-footer mt-4 text-center">
+                    <p class="text-muted small mb-0">Recibirás un email de confirmación en breve.</p>
+                    <p class="text-muted small">¡Gracias por confiar en Mateabags!</p>
+                </div>
             </div>
-            <h2 class="mb-3">¡Gracias por tu compra!</h2>
-            <p class="lead mb-4">Tu pedido ha sido procesado correctamente.</p>
-            <p class="text-muted mb-5">ID del pedido: <strong>{{ createdOrderId }}</strong></p>
-            <button class="btn btn-primary btn-lg" (click)="goToHome()">Volver a la tienda</button>
+
+            <!-- Action Buttons (outside receipt for PDF) -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary me-3" (click)="downloadReceipt()">
+                    <i class="bi bi-download me-2"></i>Descargar PDF
+                </button>
+                <button class="btn btn-primary" (click)="goToHome()">
+                    <i class="bi bi-house-fill me-2"></i>Volver a la Tienda
+                </button>
+            </div>
         </div>
 
         <!-- Checkout Form -->
@@ -31,7 +159,7 @@
                     <div *ngIf="currentStep === 1">
                         <div class="card mb-4" formGroupName="customer">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0"><i class="far fa-user me-2"></i> Datos de Contacto</h5>
+                                <h5 class="mb-0"><i class="bi bi-person-vcard me-2"></i> Datos de Contacto</h5>
                             </div>
                             <div class="card-body">
                                 <div class="form-group mb-3">
@@ -60,34 +188,54 @@
                     <div *ngIf="currentStep === 2">
                         <div class="card mb-4" formGroupName="address">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> Dirección de Envío</h5>
+                                <h5 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i> Dirección de Envío</h5>
                             </div>
                             <div class="card-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Dirección (Calle y número)</label>
-                                    <input type="text" class="form-control" formControlName="line1"
-                                        [class.is-invalid]="checkoutForm.get('address.line1')?.invalid && checkoutForm.get('address.line1')?.touched">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Piso / Puerta (Opcional)</label>
-                                    <input type="text" class="form-control" formControlName="line2">
+                                <div class="row">
+                                    <div class="col-md-8 mb-3">
+                                        <label class="form-label">Dirección (Calle)</label>
+                                        <input type="text" class="form-control" formControlName="street"
+                                            placeholder="Ej: Calle Mayor"
+                                            [class.is-invalid]="checkoutForm.get('address.street')?.invalid && checkoutForm.get('address.street')?.touched">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Número</label>
+                                        <input type="text" class="form-control" formControlName="number"
+                                            placeholder="Ej: 123"
+                                            [class.is-invalid]="checkoutForm.get('address.number')?.invalid && checkoutForm.get('address.number')?.touched">
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Ciudad</label>
-                                        <input type="text" class="form-control" formControlName="city"
-                                            [class.is-invalid]="checkoutForm.get('address.city')?.invalid && checkoutForm.get('address.city')?.touched">
+                                        <label class="form-label">Piso (Opcional)</label>
+                                        <input type="text" class="form-control" formControlName="floor"
+                                            placeholder="Ej: 3º">
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Provincia/Estado</label>
-                                        <input type="text" class="form-control" formControlName="state"
-                                            [class.is-invalid]="checkoutForm.get('address.state')?.invalid && checkoutForm.get('address.state')?.touched">
+                                        <label class="form-label">Puerta (Opcional)</label>
+                                        <input type="text" class="form-control" formControlName="door"
+                                            placeholder="Ej: A">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Población</label>
+                                        <input type="text" class="form-control" formControlName="town"
+                                            placeholder="Ej: Alcalá de Henares"
+                                            [class.is-invalid]="checkoutForm.get('address.town')?.invalid && checkoutForm.get('address.town')?.touched">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Ciudad</label>
+                                        <input type="text" class="form-control" formControlName="city"
+                                            placeholder="Ej: Madrid"
+                                            [class.is-invalid]="checkoutForm.get('address.city')?.invalid && checkoutForm.get('address.city')?.touched">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Código Postal</label>
                                         <input type="text" class="form-control" formControlName="postcode"
+                                            placeholder="Ej: 28001"
                                             [class.is-invalid]="checkoutForm.get('address.postcode')?.invalid && checkoutForm.get('address.postcode')?.touched">
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -96,6 +244,11 @@
                                             <option value="ES">España</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Indicaciones Extras (Opcional)</label>
+                                    <textarea class="form-control" rows="2" formControlName="extraInstructions"
+                                        placeholder="Ej: Dejar en conserjería, Llamar al timbre del portero..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -110,7 +263,7 @@
                     <div *ngIf="currentStep === 3">
                         <div class="card mb-4" formGroupName="gift">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0"><i class="fas fa-gift me-2"></i> Opciones de Regalo</h5>
+                                <h5 class="mb-0"><i class="bi bi-gift-fill me-2"></i> Opciones de Regalo</h5>
                             </div>
                             <div class="card-body">
                                 <div class="form-check mb-3">
@@ -139,7 +292,7 @@
                     <div *ngIf="currentStep === 4">
                         <div class="card mb-4" formGroupName="payment">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0"><i class="far fa-credit-card me-2"></i> Método de Pago (Simulación)
+                                <h5 class="mb-0"><i class="bi bi-credit-card-2-front-fill me-2"></i> Método de Pago (Simulación)
                                 </h5>
                             </div>
                             <div class="card-body">

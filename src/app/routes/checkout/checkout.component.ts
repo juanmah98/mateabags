@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../core';
 import { CreateOrderPayload } from '../../models/checkout.model';
-import { Currency } from '../../models/enums';
+import { Currency, AddressKind } from '../../models/enums';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-checkout',
@@ -22,6 +24,10 @@ export class CheckoutComponent implements OnInit {
   isLoading = false;
   isSuccess = false;
   createdOrderId = '';
+  orderHashCode = '';                // Hash corto del order ID
+  orderDate: Date | null = null;
+  orderData: any = null;
+  completedItems: any[] = [];
 
   currentStep = 1;
 
@@ -43,12 +49,15 @@ export class CheckoutComponent implements OnInit {
         phone: ['', Validators.required]
       }),
       address: this.fb.group({
-        line1: ['', Validators.required],
-        line2: [''],
-        city: ['', Validators.required],
-        state: ['', Validators.required],
-        postcode: ['', Validators.required],
-        country: ['ES', Validators.required] // Default Spain
+        street: ['', Validators.required],           // Dirección (calle)
+        number: ['', Validators.required],           // Número
+        floor: [''],                                 // Piso (opcional)
+        door: [''],                                  // Puerta (opcional)
+        city: ['', Validators.required],             // Ciudad
+        town: ['', Validators.required],             // Población
+        postcode: ['', Validators.required],         // Código Postal
+        country: ['ES', Validators.required],        // País (default Spain)
+        extraInstructions: ['']                      // Indicaciones extras (opcional)
       }),
       gift: this.fb.group({
         is_gift: [false],
@@ -121,13 +130,30 @@ export class CheckoutComponent implements OnInit {
     this.isLoading = true;
     const formValue = this.checkoutForm.value;
 
+    // Transformar la dirección del formulario al modelo de Supabase
+    const addressForm = formValue.address;
+    let line1 = `${addressForm.street} ${addressForm.number}`;
+
+    // Añadir piso y puerta si existen
+    if (addressForm.floor || addressForm.door) {
+      const floorDoor = [];
+      if (addressForm.floor) floorDoor.push('Piso ' + addressForm.floor);
+      if (addressForm.door) floorDoor.push('Puerta ' + addressForm.door);
+      line1 += `, ${floorDoor.join(' ')}`;
+    }
+
     const payload: CreateOrderPayload = {
       customer: formValue.customer,
       address: {
-        ...formValue.address,
-        kind: 'shipping',
+        line1: line1,                                    // Calle + Número + Piso + Puerta
+        line2: addressForm.extraInstructions || undefined, // Indicaciones extras
+        city: addressForm.city,                           // Ciudad
+        state: addressForm.town,                          // Población (mapeado a state)
+        postcode: addressForm.postcode,                   // Código Postal
+        country: addressForm.country,                     // País
+        kind: AddressKind.SHIPPING,
         label: 'Envío',
-        recipient_name: formValue.customer.name // Usamos el nombre del cliente como receptor
+        recipient_name: formValue.customer.name
       },
       items: this.cartItems.map(item => ({
         product_id: item.id,
@@ -154,8 +180,76 @@ export class CheckoutComponent implements OnInit {
     } else if (data) {
       this.isSuccess = true;
       this.createdOrderId = data.order_id;
-      // Limpiar estado
+      this.orderHashCode = this.generateOrderHash(data.order_id);
+      this.orderDate = new Date();
+
+      // Guardar datos del pedido antes de limpiar
+      this.orderData = formValue;
+      this.completedItems = [...this.cartItems];
+
+      // Limpiar estado del carrito
       this.cartItems = [];
+    }
+  }
+
+  // Genera un hash corto de 8 dígitos a partir del order ID UUID
+  generateOrderHash(orderId: string): string {
+    let hash = 0;
+    for (let i = 0; i < orderId.length; i++) {
+      const char = orderId.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    // Convertir a valor absoluto y tomar los últimos 8 dígitos
+    const hashStr = Math.abs(hash).toString();
+    return hashStr.padStart(8, '0').substring(0, 8);
+  }
+
+  async downloadReceipt() {
+    const receiptElement = document.getElementById('order-receipt');
+    if (!receiptElement) return;
+
+    try {
+      // Capturar el HTML como imagen con escala reducida para mejor ajuste
+      const canvas = await html2canvas(receiptElement, {
+        scale: 1.5,  // Reducido de 2 a 1.5 para mejor ajuste
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // Crear PDF
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const margin = 10; // Márgenes
+      const availableWidth = pageWidth - (margin * 2);
+
+      const imgWidth = availableWidth;
+      const imgHeight = (canvas.height * availableWidth) / canvas.width;
+
+      const imgData = canvas.toDataURL('image/png');
+
+      // Si la imagen es más alta que una página, dividir en múltiples páginas
+      let position = margin;
+      let heightLeft = imgHeight;
+
+      // Primera página
+      pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - margin * 2);
+
+      // Añadir páginas adicionales si es necesario
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight + margin;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - margin * 2);
+      }
+
+      pdf.save(`comprobante-pedido-${this.createdOrderId}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Hubo un error al generar el PDF. Por favor intenta nuevamente.');
     }
   }
 

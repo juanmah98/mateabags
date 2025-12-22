@@ -102,6 +102,7 @@
     transition: all 0.3s;
     color: #1C352D;
     border-radius: 25px;
+    padding: 0.75rem 1rem;
 
     &:hover {
         background-color: (#1C352D);
@@ -116,8 +117,8 @@
 .icon-circle {
     width: 80px;
     height: 80px;
-    background-color: #dcfce7;
-    color: #166534;
+ 
+    color: #1C352D;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -139,6 +140,106 @@
 .text-total {
     color: #1C352D;
     font-weight: 700;
+}
+
+/* Receipt Styles */
+.receipt-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.receipt-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    
+    // Efecto de ticket cortado en la parte superior
+   
+    
+    h2 {
+        color: #1C352D;
+        font-weight: 700;
+    }
+
+    h5.section-title {
+        color: #1C352D;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+}
+
+.receipt-header {
+    padding-bottom: 1rem;
+}
+
+.receipt-section {
+    margin-bottom: 1.5rem;
+}
+
+.alert-info {
+    background-color: #1c352d49;
+    color: #000;
+    border-color: #1C352D;
+}
+
+.receipt-table {
+    margin-bottom: 0;
+    
+    thead {
+        background-color: #f8f9fa;
+        
+        th {
+            color: #1C352D;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 1rem 0.75rem;
+        }
+    }
+    
+    tbody {
+        tr {
+            border-bottom: 1px solid #f0f0f0;
+            
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        
+        td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+    }
+}
+
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.receipt-totals {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    
+    .total-amount {
+        font-size: 1.25rem;
+        color: #1C352D;
+    }
+}
+
+.receipt-footer {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
 }
 
 /* Responsive adjustments */
