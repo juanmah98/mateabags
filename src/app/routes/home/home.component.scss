@@ -22,21 +22,11 @@ body {
   align-items: center;
   padding-top: 100px;
   overflow: hidden;
+  background-image: url('../../../assets/principales/home-portada-blur.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  .hero-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-
-    .hero-bg-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: left;
-    }
   }
 
   .container {
@@ -45,7 +35,7 @@ body {
   }
 
   .hero-content {
-    padding: 0 40px;
+    padding: 40px 40px;
 
     .hero-title {
       font-size: 7rem;
@@ -53,34 +43,37 @@ body {
       color: var(--color-text-light);
       margin-bottom: 1rem;
       letter-spacing: 2rem;
-      text-shadow: 4px 4px 6px rgba(155, 155, 155, 0.8);
+     /*  text-shadow: 4px 4px 6px rgba(155, 155, 155, 0.8); */
     }
 
     .hero-subtitle {
-      font-size: 1.5rem;
-      font-weight: 500;
+      font-size: 1.3rem;
       font-family: 'Playfair Display', serif;
-      color: var(--color-secondary);
+      font-style: italic;
+      color: var(--color-text-light);
       margin-bottom: 2rem;
     }
   }
-}
 
 /* Tagline Section */
 .tagline-section {
-  background-color: white;
-  padding: 80px 0;
 
-  h2 {
+  h2.title-tagline {
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--color-secondary);
+    color: #fff;
+  }
+
+  p.subtitle-tagline {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 2rem;
   }
 }
 
 /* Product Gallery Section */
 .product-gallery-section {
-  background-color: white;
+  background-color: #1C352D;
   padding: 80px 0;
 
   h2 {
@@ -124,7 +117,7 @@ body {
       flex: 0 0 32%;
       max-width: 32%;
       height: 420px;
-      background: var(--color-primary);
+      background: #fff;
       border-radius: 15px;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
       overflow: hidden;
@@ -166,27 +159,28 @@ body {
         flex: 1;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: end;
         overflow: hidden;
 
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
+          
           /* object-fit: cover; */
-          object-position: top;
+          object-position: right;
           transition: transform 0.5s ease;
         }
       }
 
-      &:hover .card-image img {
+    /*   &:hover .card-image img {
         transform: translateY(-10px) scale(1.08);
       }
-
-      &:hover .card-content {
+ */
+    /*   &:hover .card-content {
         filter: blur(4px);
         opacity: 0.18;
-      }
+      } */
     }
 
     .carousel-indicators {
@@ -196,7 +190,7 @@ body {
       justify-content: center;
       border-radius: 50px;
       gap: 22px;
-      background-color: var(--color-primary);
+      background-color: #fff;
       margin-top: 80px;
       position: relative;
       z-index: 10;
@@ -206,16 +200,16 @@ body {
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: #E3D8C2;
+        background: #1C352D;
         cursor: pointer;
         transition: all 0.3s ease;
 
         &:hover {
-          background: var(--color-primary);
+          background: #1C352D;
         }
 
         &.active {
-          background: #E3D8C2;
+          background: #1C352D;
           transform: scale(1.1);
           width: 50px;
           border-radius: 50px;
@@ -228,8 +222,8 @@ body {
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    max-width: 1000px;
+    gap: 20px;
+    max-width: auto;
     margin: 0 auto;
 
     .gallery-item {
@@ -237,9 +231,9 @@ body {
 
       img {
         width: 100%;
-        height: 300px;
+        height: 400px;
         object-fit: cover;
-        border-radius: 15px;
+        border-radius: 10px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
         cursor: pointer;
@@ -328,7 +322,7 @@ body {
 }
 
 .video-section {
-  background-image: url('../../../assets/principales/bg-verde-puntos.jpg');
+   background: #1C352D;
   padding: 90px 0;
   min-height: 90dvh;
   position: center;
