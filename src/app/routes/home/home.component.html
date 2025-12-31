@@ -209,6 +209,17 @@
   </div>
 </section>
 
+<!-- Polaroid Section -->
+<section class="polaroid-section">
+  <div class="container-fluid ">
+    <div class="row">
+      <div class="col-12 text-center">
+       <img src="../../../assets/principales/polaroid.png" alt="" class="img-polaroid"  >
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Main Product Section -->
 <section class="main-product-section section" style="background-image: url('assets/principales/bolso-grande.png');">
   <div class="container-fluid p-0">
@@ -218,4 +229,74 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="form-section section">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 text-center mb-4">
+      <h2 class="form-title">Matea es la pieza que completa tu look, diseñada para que tu pasión te acompañe con la distinción que mereces.</h2>
+      <p class="form-subtitle">Solo hay 150 unidades para esta edición limitada "Origin".</p>
+    </div>
+
+    <div class="col-12 text-center mb-4">
+      <h4 class="form-title">Asegura tu lugar en la preventa</h4>
+    </div>
+    <div class="col-lg-8 col-md-10">
+      <!-- Toast de error -->
+      <div class="toast-wrapper" aria-live="polite" aria-atomic="true">
+        <div *ngIf="submitError" class="toast-message toast-error">
+          {{ submitError }}
+        </div>
+      </div>
+
+      <!-- Formulario con estilo waitlist -->
+      <div class="waitlist-form">
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Nombre"
+              required
+              [(ngModel)]="formData.nombre"
+              name="nombre"
+              [disabled]="isSubmitting">
+          </div>
+          <div class="form-group">
+            <input 
+              type="email" 
+              class="form-control" 
+              placeholder="Correo electrónico"
+              required
+              [(ngModel)]="formData.email"
+              name="email"
+              [disabled]="isSubmitting">
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-submit" [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">Unirme a la lista privada</span>
+              <span *ngIf="isSubmitting">Enviando...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Texto inferior -->
+      <div class="bottom-text text-center mt-4">
+        <p class="info-text">Solo recibirás información relevante sobre el lanzamiento de Matea</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!-- Success Popup -->
+        <div class="success-popup-backdrop" *ngIf="showSuccessPopup">
+          <div class="success-popup">
+            <div class="success-popup-content">
+              <button class="popup-button" (click)="instagram()">Ir a Instagram</button>
+              <button class="popup-button mt-2" (click)="closeSuccessPopup()">Cerrar</button>
+            </div>
+          </div>
+        </div>
 </section>
