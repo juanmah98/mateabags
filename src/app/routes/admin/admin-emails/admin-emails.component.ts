@@ -55,7 +55,7 @@ export class AdminEmailsComponent implements OnInit {
   }
 
   /**
-   * Envío masivo de emails (pendiente de implementar edge function)
+   * Envío masivo de emails a todos los suscriptores de la waitlist
    */
   async sendMassEmail() {
     if (this.subscribers.length === 0) {
@@ -65,7 +65,7 @@ export class AdminEmailsComponent implements OnInit {
 
     // Confirmación
     const confirmed = confirm(
-      `¿Estás seguro de enviar un email a ${this.totalSubscribers} suscriptores?`
+      `¿Estás seguro de enviar un email a ${this.totalSubscribers} suscriptores?\n\nEsto enviará un email de código de acceso a cada suscriptor.`
     );
 
     if (!confirmed) return;
@@ -73,21 +73,47 @@ export class AdminEmailsComponent implements OnInit {
     this.isSending = true;
 
     try {
-      // TODO: Llamar a la Edge Function de Supabase
-      // const { data, error } = await this.supabaseService['supabase']
-      //   .functions.invoke('send-mass-email', {
-      //     body: { subscribers: this.subscribers }
-      //   });
+      console.log('Iniciando envío masivo de emails...');
 
-      // Simulación por ahora
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Llamar a la Edge Function de Supabase
+      const { data, error } = await this.supabaseService['supabase']
+        .functions.invoke('revealEmail', {
+          body: {}
+        });
 
-      this.notifications.success('Función de envío masivo pendiente de implementar');
-      console.log('Enviar email a:', this.subscribers.map(s => s.email));
+      if (error) {
+        console.error('Error en Edge Function:', error);
+        this.notifications.error('Error al enviar emails: ' + error.message);
+        return;
+      }
 
-    } catch (error) {
+      // Procesar respuesta
+      if (data) {
+        const { total, sent, failed } = data;
+
+        console.log('Resultado del envío:', { total, sent, failed });
+
+        if (failed > 0) {
+          this.notifications.warning(
+            `Envío completado: ${sent} exitosos, ${failed} fallidos de ${total} total`
+          );
+        } else {
+          this.notifications.success(
+            `¡Emails enviados exitosamente! ${sent} de ${total} suscriptores`
+          );
+        }
+
+        // Recargar la lista para mostrar los campos actualizados
+        await this.loadSubscribers();
+      } else {
+        this.notifications.warning('No se recibió respuesta del servidor');
+      }
+
+    } catch (error: any) {
       console.error('Error sending mass email:', error);
-      this.notifications.error('Error al enviar emails');
+      this.notifications.error(
+        'Error al enviar emails: ' + (error?.message || 'Error desconocido')
+      );
     } finally {
       this.isSending = false;
     }

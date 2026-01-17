@@ -18,11 +18,7 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./routes/home/home.component').then(m => m.HomeComponent),
-    canActivate: [homeDateGuard] // Guard temporal para home
-  },
-  {
-    path: 'home/login',
-    loadComponent: () => import('./routes/home/login/login.component').then(m => m.LoginComponent)
+    canActivate: [homeDateGuard]  // TODO: Descomentar antes de producción
   },
   {
     path: 'home/product-sale',
