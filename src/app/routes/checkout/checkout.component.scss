@@ -1,0 +1,255 @@
+.checkout-container {
+    margin-top: 2rem;
+    padding: 3rem 0;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.section-title {
+    color: #1C352D;
+    font-weight: 700;
+}
+
+.progress-container {
+    .progress {
+        height: 15px;
+        border-radius: 15px;
+        background-color: #e5e7eb;
+        overflow: hidden;
+
+        .progress-bar {
+            background-color: #1C352D;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: width 0.4s ease;
+        }
+    }
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid #eee;
+        padding: 1.25rem;
+
+        h5 {
+            color: #1C352D;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+
+.form-label {
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+
+    &:focus {
+        border-color: #1C352D;
+        box-shadow: 0 0 0 3px rgba(26, 58, 46, 0.1);
+    }
+
+    &.is-invalid {
+        border-color: #ef4444;
+    }
+}
+
+.btn-primary {
+    background-color: #1C352D;
+    border-color: #1C352D;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: (#1C352D);
+        border-color: (#1C352D);
+        transform: translateY(-1px);
+    }
+
+    &:disabled {
+        background-color: #9ca3af;
+        border-color: #9ca3af;
+        transform: none;
+    }
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border-color: #1C352D;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    color: #1C352D;
+    border-radius: 25px;
+    padding: 0.75rem 1rem;
+
+    &:hover {
+        background-color: (#1C352D);
+        border-color: (#1C352D);
+        transform: translateY(-1px);
+        color: #fff;
+    }
+
+}
+
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+ 
+    color: #1C352D;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto;
+}
+
+.success-message {
+    max-width: 600px;
+    margin: 0 auto;
+
+    h2 {
+        color: #1C352D;
+        font-weight: 700;
+    }
+}
+
+.text-total {
+    color: #1C352D;
+    font-weight: 700;
+}
+
+/* Receipt Styles */
+.receipt-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.receipt-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    
+    // Efecto de ticket cortado en la parte superior
+   
+    
+    h2 {
+        color: #1C352D;
+        font-weight: 700;
+    }
+
+    h5.section-title {
+        color: #1C352D;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+}
+
+.receipt-header {
+    padding-bottom: 1rem;
+}
+
+.receipt-section {
+    margin-bottom: 1.5rem;
+}
+
+.alert-info {
+    background-color: #1c352d49;
+    color: #000;
+    border-color: #1C352D;
+}
+
+.receipt-table {
+    margin-bottom: 0;
+    
+    thead {
+        background-color: #f8f9fa;
+        
+        th {
+            color: #1C352D;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 1rem 0.75rem;
+        }
+    }
+    
+    tbody {
+        tr {
+            border-bottom: 1px solid #f0f0f0;
+            
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        
+        td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+    }
+}
+
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.receipt-totals {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    
+    .total-amount {
+        font-size: 1.25rem;
+        color: #1C352D;
+    }
+}
+
+.receipt-footer {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .sticky-top {
+        position: static !important;
+        margin-bottom: 2rem;
+    }
+
+    .col-lg-5 {
+        order: -1;
+    }
+}

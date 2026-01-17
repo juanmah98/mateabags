@@ -1,0 +1,46 @@
+<div class="admin-container">
+    <!-- Logo Header -->
+    <div class="logo-header">
+        <h1 class="logo">M</h1>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>PANEL MASTER</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+                    ESTADÍSTICAS
+                </a>
+                <a routerLink="/admin/customers" routerLinkActive="active" class="nav-item">
+                    CLIENTES
+                </a>
+                <a routerLink="/admin/sales" routerLinkActive="active" class="nav-item">
+                    VENTAS
+                </a>
+                <a routerLink="/admin/products" routerLinkActive="active" class="nav-item">
+                    PRODUCTOS
+                </a>
+                <a routerLink="/admin/emails" routerLinkActive="active" class="nav-item">
+                    EMAILS
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" (click)="logout()">
+                    <i class="bi bi-door-open"></i>
+                    SALIR
+                </button>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="sales-container">
+    <h2 class="page-title">Ventas</h2>
+
+    <!-- Stats Summary -->
+    <div class="stats-row" *ngIf="!isLoading">
+        <div class="stat-badge">
+            <strong>{{ totalSales }}</strong> VENTAS
+        </div>
+        <div class="stat-badge processing">
+            <strong>{{ processingOrders }}</strong> PROCESANDO
+        </div>
+        <div class="stat-badge shipped">
+            <strong>{{ shippedOrders }}</strong> ENVIADOS
+        </div>
+        <!-- <div class="stat-badge paid">
+            <strong>{{ paidOrders }}</strong> PAGADOS
+        </div> -->
+    </div>
+
+    <!-- Orders Table -->
+    <div class="table-container" *ngIf="!isLoading && orders.length > 0">
+        <table class="sales-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CLIENTE</th>
+                    <th>EMAIL</th>
+                    <th>TOTAL</th>
+                    <th>ESTADO</th>
+                    <th>FECHA</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of orders; let i = index">
+                    <td class="text-muted small">{{ order.id | slice:0:8 }}...</td>
+                    <td>{{ order.customer?.name || '-' }}</td>
+                    <td>{{ order.customer?.email || '-' }}</td>
+                    <td class="fw-bold">{{ order.total_amount | currency: order.currency }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                            {{ getStatusLabel(order.status) }}
+                        </span>
+                    </td>
+                    <td>{{ formatDate(order.created_at) }}</td>
+                    <td>
+                        <button class="btn-icon" (click)="openModal(order)" title="Ver Detalles">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && orders.length === 0">
+        <p>No hay ventas registradas aún</p>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+        <div class="spinner-border" role="status"></div>
+        <p>Cargando ventas...</p>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h5>Detalles del Pedido #{{ selectedOrder?.id | slice:0:8 }}</h5>
+                <button class="close-btn" (click)="closeModal()">&times;</button>
+            </div>
+
+            <div class="modal-body" *ngIf="selectedOrder">
+                <!-- Status Bar -->
+                <div class="status-section mb-4">
+                    <label class="form-label mb-2">Estado del Pedido:</label>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" [ngModel]="selectedOrder.status"
+                            (ngModelChange)="updateStatus($event)" [disabled]="isUpdating">
+                            <!-- <option value="pending">Pendiente</option> -->
+                            <option value="paid">Pagado</option>
+                            <option value="processing">Procesando</option>
+                            <option value="shipped">Enviado</option>
+                            <option value="delivered">Entregado</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                        <span *ngIf="isUpdating"
+                            class="spinner-border spinner-border-sm text-primary align-self-center"></span>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Customer Info -->
+                    <div class="col-md-6">
+                        <div class="info-card">
+                            <h6><i class="fas fa-user mb-2"></i> Cliente</h6>
+                            <p><strong>Nombre:</strong> {{ selectedOrder.customer?.name }}</p>
+                            <p><strong>Email:</strong> {{ selectedOrder.customer?.email }}</p>
+                            <p><strong>Teléfono:</strong> {{ selectedOrder.customer?.phone || '-' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Info -->
+                    <div class="col-md-6">
+                        <div class="info-card">
+                            <h6><i class="fas fa-shipping-fast mb-2"></i> Envío</h6>
+                            <p><strong>Dirección:</strong> {{ selectedOrder.shipping_address?.line1 }}</p>
+                            <p *ngIf="selectedOrder.shipping_address?.line2">{{ selectedOrder.shipping_address?.line2 }}
+                            </p>
+                            <p>
+                                {{ selectedOrder.shipping_address?.city }},
+                                {{ selectedOrder.shipping_address?.state }}
+                                {{ selectedOrder.shipping_address?.postcode }}
+                            </p>
+                            <p><strong>País:</strong> {{ selectedOrder.shipping_address?.country }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Gift Info -->
+                    <div class="col-12" *ngIf="hasGiftItems(selectedOrder)">
+                        <div class="info-card gift-card">
+                            <h6><i class="fas fa-gift mb-2"></i> Regalo</h6>
+                            <div *ngFor="let item of selectedOrder.items">
+                                <div *ngIf="item.is_gift" class="mb-2">
+                                    <p class="mb-1"><strong>Para el producto:</strong> {{ item.title }}</p>
+                                    <p class="mb-0 fst-italic">"{{ item.gift_message }}"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="col-12">
+                        <h6 class="mb-3">Productos</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cant.</th>
+                                        <th>Precio</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of selectedOrder.items">
+                                        <td>{{ item.title }} <small class="text-muted d-block">{{ item.sku }}</small>
+                                        </td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{ item.unit_price | currency: selectedOrder.currency }}</td>
+                                        <td>{{ item.total_price | currency: selectedOrder.currency }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end">Subtotal</td>
+                                        <td>{{ selectedOrder.subtotal_amount | currency: selectedOrder.currency }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end">Envío</td>
+                                        <td>{{ selectedOrder.shipping_cost | currency: selectedOrder.currency }}</td>
+                                    </tr>
+                                    <tr class="fw-bold">
+                                        <td colspan="3" class="text-end">Total</td>
+                                        <td>{{ selectedOrder.total_amount | currency: selectedOrder.currency }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

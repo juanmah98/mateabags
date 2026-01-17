@@ -1,0 +1,25 @@
+/* Footer */
+.footer {
+  background-color: var(--color-secondary);
+  padding: 20px 0;
+  
+  p {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+  }
+}
+
+.text-decoration-legal {
+  text-decoration: none;
+  color: var(--color-text-light);
+  transition: color 0.3s ease;
+
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--color-primary);
+    transition: all 0.3s ease;
+  }
+}
+
+

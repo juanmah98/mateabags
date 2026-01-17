@@ -1,0 +1,95 @@
+<!-- Banner principal (Fixed bottom) -->
+<div class="cookie-banner-container" [class.visible]="isVisible">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-3 mb-lg-0">
+                <h3>Tu privacidad nos importa</h3>
+                <p>
+                    Utilizamos cookies propias y de terceros para mejorar tu experiencia, realizar análisis estadísticos
+                    y mostrarte publicidad personalizada.
+                    Las cookies esenciales son necesarias para el funcionamiento del sitio.
+                </p>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end buttons-wrapper">
+                <button class="btn-primary me-2" (click)="acceptAll()">Aceptar todo</button>
+                <button class="btn-outline-cookie" (click)="openConfig()">Configurar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de configuración -->
+<div class="cookie-config-overlay" [class.visible]="showConfig">
+    <div class="cookie-config-modal">
+        <div class="modal-header">
+            <h2>Configuración de Cookies</h2>
+            <button class="close-btn" (click)="closeConfig()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <p class="intro-text">
+                Aquí puedes configurar tus preferencias. Ten en cuenta que el bloqueo de algunos tipos de cookies puede
+                afectar a tu experiencia en nuestra web.
+            </p>
+
+            <!-- Esenciales -->
+            <div class="cookie-option">
+                <div class="option-header">
+                    <div class="option-info">
+                        <h4>Esenciales (Necesarias)</h4>
+                        <p>Son aquellas que permiten la navegación a través del sitio web y la utilización de sus
+                            diferentes opciones o servicios.</p>
+                    </div>
+                    <div class="option-toggle">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="essentialCookies" [checked]="true"
+                                disabled>
+                        </div>
+                        <span class="status-text">Siempre activo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analíticas -->
+            <div class="cookie-option">
+                <div class="option-header">
+                    <div class="option-info">
+                        <h4>Analíticas</h4>
+                        <p>Nos permiten cuantificar el número de usuarios y realizar la medición y análisis estadístico
+                            de la utilización que hacen los usuarios del servicio.</p>
+                    </div>
+                    <div class="option-toggle">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="analyticsCookies"
+                                [(ngModel)]="tempConsent.analytics">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing -->
+            <div class="cookie-option">
+                <div class="option-header">
+                    <div class="option-info">
+                        <h4>Marketing</h4>
+                        <p>Cookies utilizadas para rastrear a los visitantes en las páginas web. La intención es mostrar
+                            anuncios relevantes y atractivos para el usuario individual.</p>
+                    </div>
+                    <div class="option-toggle">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="marketingCookies"
+                                [(ngModel)]="tempConsent.marketing">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-light me-2" (click)="closeConfig()">Cancelar</button>
+            <button class="btn btn-primary" (click)="saveConfig()">Guardar preferencias</button>
+        </div>
+    </div>
+</div>

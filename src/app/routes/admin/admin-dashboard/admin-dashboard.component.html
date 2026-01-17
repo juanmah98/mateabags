@@ -1,0 +1,46 @@
+<div class="dashboard" *ngIf="!isLoading">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.totalWaitlist }}</div>
+            <div class="stat-label">WAITLIST</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.totalSales }}</div>
+            <div class="stat-label">VENTAS</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.totalCustomers }}</div>
+            <div class="stat-label">CLIENTES</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.pendingOrders }}</div>
+            <div class="stat-label">PENDIENTES</div>
+        </div>
+    </div>
+
+    <!-- Chart Area -->
+    <div class="chart-container">
+        <h3 class="chart-title">Crecimiento de Waitlist</h3>
+        <div class="simple-chart">
+            <div class="chart-bars">
+                <div *ngFor="let item of chartData" class="chart-bar" [style.height.%]="(item.value / 30) * 100">
+                    <span class="bar-value">{{ item.value }}</span>
+                </div>
+            </div>
+            <div class="chart-labels">
+                <span *ngFor="let item of chartData" class="label">{{ item.day }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading" *ngIf="isLoading">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p>Cargando estadísticas...</p>
+</div>

@@ -1,0 +1,104 @@
+<!-- Waitlist Form Section -->
+
+<section class="section-first" id="hero-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <h1 class="hero-title">El ritual es el mismo.</h1>
+          <h2 class="hero-subtitle">La forma de llevarlo<br>está por cambiar.</h2>
+          <p class="hero-description">Edición limitada exclusiva para suscriptores.</p>
+          <button class="btn btn-white" (click)="scrollToForm()">Quiero acceso anticipado</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="waitlist-section section" id="waitlist-form">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <!-- Toasts -->
+        <div class="toast-wrapper" aria-live="polite" aria-atomic="true">
+          <div *ngIf="submitError" class="toast-message toast-error">
+            {{ submitError }}
+          </div>
+        </div>
+
+        <!-- Success Popup -->
+        <div class="success-popup-backdrop" *ngIf="showSuccessPopup">
+          <div class="success-popup">
+            <div class="success-popup-content">
+              <button class="popup-button" (click)="closeSuccessPopup()">Listo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Text -->
+        <div class="top-text text-center mb-5">
+          <p class="text-line">Diseñado para quienes viven el mate con estilo.</p>
+          <p class="text-line">Acceso exclusivo al reveal.</p>
+        </div>
+
+        <!-- Form -->
+        <div class="waitlist-form">
+          <form (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Nombre" required [(ngModel)]="formData.nombre"
+                name="nombre" [disabled]="isSubmitting">
+            </div>
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="Correo electrónico" required
+                [(ngModel)]="formData.email" name="email" [disabled]="isSubmitting">
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-submit" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">Unirme a la lista privada</span>
+                <span *ngIf="isSubmitting">Enviando...</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bottom Text -->
+        <div class="bottom-text text-center mt-5">
+          <p class="text-line-2">El lujo también existe en el mate.</p>
+          <p class="text-line-2">Y está por revelarse.</p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-container mt-5">
+          <div class="countdown-timer">
+            <div class="countdown-item">
+              <div class="countdown-number">{{ formatNumber(countdown.days) }}</div>
+              <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ formatNumber(countdown.hours) }}</div>
+              <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ formatNumber(countdown.minutes) }}</div>
+              <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+              <div class="countdown-number">{{ formatNumber(countdown.seconds) }}</div>
+              <div class="countdown-label">Seconds</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-second">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+
+      </div>
+    </div>
+  </div>
+</section>

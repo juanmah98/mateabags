@@ -1,0 +1,59 @@
+<div class="emails-container">
+    <div class="header">
+        <div>
+            <h2 class="page-title">Envío de emails</h2>
+            <p class="subtitle">
+                <span class="badge">{{ totalSubscribers }}</span> personas en lista de espera
+            </p>
+        </div>
+
+        <button class="btn btn-send" (click)="sendMassEmail()" [disabled]="isSending || subscribers.length === 0">
+            <i class="bi bi-send-fill me-2"></i>
+            <span *ngIf="!isSending">Enviar Email Masivo</span>
+            <span *ngIf="isSending">Enviando...</span>
+        </button>
+    </div>
+
+    <!-- Subscribers Table -->
+    <div class="table-container" *ngIf="!isLoading && subscribers.length > 0">
+        <div class="table-wrapper">
+            <table class="subscribers-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>NOMBRE</th>
+                        <th>EMAIL</th>
+                        <th>CÓDIGO</th>
+                        <th>FECHA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let subscriber of subscribers; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ subscriber.name }}</td>
+                        <td class="email">{{ subscriber.email }}</td>
+                        <td>
+                            <span class="code-badge" *ngIf="subscriber.codigo">
+                                {{ subscriber.codigo }}
+                            </span>
+                            <span *ngIf="!subscriber.codigo">-</span>
+                        </td>
+                        <td>{{ formatDate(subscriber.created_at) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && subscribers.length === 0">
+        <i class="bi bi-inbox"></i>
+        <p>No hay suscriptores en la waitlist aún</p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" *ngIf="isLoading">
+        <div class="spinner-border" role="status"></div>
+        <p>Cargando suscriptores...</p>
+    </div>
+</div>

@@ -1,1 +1,253 @@
-/* You can add global styles to this file, and also import other style files */
+@use "sass:color";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Variables CSS */
+:root {
+  --color-primary: #F7F4EE;
+  --color-secondary: #1C352D;
+  --color-text-dark: #1C352D;
+  --color-text-light: #ffffff;
+  --color-accent: #8B9A8B;
+  --color-border: #E5E0D8;
+}
+
+/* Estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.6;
+  color: var(--color-text-dark);
+  background-color: white;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+/* Botones personalizados */
+.btn-primary {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--color-text-light);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  padding: 12px 30px;
+  border-radius: 25px;
+  text-decoration: none !important;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: color.adjust(#1C352D, $lightness: -10%);
+    border-color: color.adjust(#1C352D, $lightness: -10%);
+    color: var(--color-text-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(63, 76, 60, 0.3);
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--color-text-light);
+  color: var(--color-text-light);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  padding: 12px 30px;
+  border-radius: 25px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--color-text-light);
+    color: var(--color-secondary);
+    transform: translateY(-2px);
+  }
+}
+
+.btn-light {
+  background-color: var(--color-text-light);
+  border: 2px solid var(--color-text-light);
+  color: var(--color-secondary);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  padding: 12px 30px;
+  border-radius: 25px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border: 2px solid transparent;
+    transform: translateY(-2px);
+  }
+}
+
+/* Estilos responsive para botones */
+@media (max-width: 768px) {
+
+  .btn-primary,
+  .btn-outline,
+  .btn-light {
+    padding: 10px 24px !important;
+    font-size: 0.9rem !important;
+    border-radius: 20px !important;
+
+    &:hover {
+      transform: translateY(-1px) !important;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+
+  .btn-primary,
+  .btn-outline,
+  .btn-light {
+    padding: 8px 20px !important;
+    font-size: 0.85rem !important;
+    border-radius: 18px !important;
+    /* width: 100%!important; */
+    text-align: center !important;
+    margin-bottom: 10px !important;
+
+    &:hover {
+      transform: none !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+
+  .btn-primary,
+  .btn-outline,
+  .btn-light {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    border-radius: 16px;
+  }
+}
+
+/* Contenedores y secciones */
+.container-fluid {
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.section {
+  padding: 80px 0;
+}
+
+.section-light {
+  background-color: var(--color-primary);
+}
+
+.section-dark {
+  background-color: var(--color-secondary);
+  color: var(--color-text-light);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-text-light);
+  }
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+.mb-5 {
+  margin-bottom: 3rem;
+}
+
+.mt-4 {
+  margin-top: 2rem;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .section {
+    padding: 60px 0;
+  }
+}
