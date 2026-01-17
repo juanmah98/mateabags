@@ -17,6 +17,51 @@
   <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico">
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <!-- Loader mientras carga la aplicación -->
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f7f5f2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    ">
+      <!-- Imagen de loading -->
+      <div style="margin-bottom: 30px;">
+        <img src="assets/principales/loading.jpg" alt="Mateabags" style="max-width: 200px; height: auto;">
+      </div>
+      
+      <!-- Spinner -->
+      <div style="margin-bottom: 15px;">
+        <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#1c352d" stroke-width="6" opacity="0.2"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#1c352d" stroke-width="6" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round">
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 50 50"
+              to="360 50 50"
+              dur="1.5s"
+              repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+      
+      <!-- Texto -->
+      <p style="
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        font-size: 16px;
+        color: #1c352d;
+        margin: 0;
+        font-weight: 500;
+      ">Cargando...</p>
+    </div>
+  </app-root>
 </body>
 </html>
