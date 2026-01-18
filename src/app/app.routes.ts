@@ -23,7 +23,7 @@ export const routes: Routes = [
   {
     path: 'home/product-sale',
     loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent),
-    /* canActivate: [homeDateGuard] */
+    canActivate: [homeDateGuard]
   },
   // Legal routes
   {

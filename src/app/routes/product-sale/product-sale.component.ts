@@ -22,10 +22,10 @@ export class ProductSaleComponent implements OnInit {
   };
 
   images = [
-    'assets/carrusel/imagen-1.jpg ',
-    'assets/carrusel/imagen-2.jpg',
-    'assets/carrusel/imagen-3.jpg',
-    'assets/carrusel/imagen-4.jpg'
+    'assets/carrusel/imagen-1.webp ',
+    'assets/carrusel/imagen-2.webp',
+    'assets/carrusel/imagen-3.webp',
+    'assets/carrusel/imagen-4.webp'
   ];
 
   selectedImage = this.images[0];
