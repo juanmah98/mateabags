@@ -4,9 +4,12 @@
     <div class="row align-items-start min-vh-100">
       <div class="col-lg-6 col-md-12">
         <div class="hero-content text-start">
-          <h1 class="hero-title">MATEA</h1>
+          <div class="mb-4">
+            <img src="assets/logos/matea-logo.png" alt="MATEA Logo" class="logo-img">
+          </div>
           <p class="hero-subtitle">Ingeniería de diseño aplicada a tu tradición más sagrada.</p>
-          <a routerLink="/home/product-sale" class="btn btn-light btn-lg">Comprar ahora</a>
+          <!-- <a routerLink="/home/product-sale" class="btn btn-light btn-sm">Comprar edición limitada</a> -->
+          <button (click)="scrollToForm()" class="btn btn-light btn-sm">Comprar edición limitada</button>
         </div>
       </div>
       <div class="col-lg-6 col-md-12">
@@ -27,16 +30,16 @@
       <div class="col-12">
         <div class="gallery-grid">
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-1.jpg" alt="MATEA Bag 1" class="img-fluid"
-              (click)="openLightbox('assets/carrusel/imagen-1.jpg', 'MATEA Bag 1')">
+            <img src="assets/carrusel/imagen-1.jpeg" alt="MATEA Bag 1" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-1.jpeg', 'MATEA Bag 1')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-2.jpg" alt="MATEA Bag 2" class="img-fluid"
-              (click)="openLightbox('assets/carrusel/imagen-2.jpg', 'MATEA Bag 2')">
+            <img src="assets/carrusel/imagen-2.jpeg" alt="MATEA Bag 2" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-2.jpeg', 'MATEA Bag 2')">
           </div>
           <div class="gallery-item">
-            <img src="assets/carrusel/imagen-3.jpg" alt="MATEA Bag 3" class="img-fluid"
-              (click)="openLightbox('assets/carrusel/imagen-3.jpg', 'MATEA Bag 3')">
+            <img src="assets/carrusel/imagen-3.jpeg" alt="MATEA Bag 3" class="img-fluid"
+              (click)="openLightbox('assets/carrusel/imagen-3.jpeg', 'MATEA Bag 3')">
           </div>
         </div>
       </div>
@@ -77,33 +80,8 @@
             <div class="carousel-track" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"
               (mouseup)="onMouseUp()" (mouseleave)="onMouseUp()" (touchstart)="onTouchStart($event)"
               (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (wheel)="onWheel($event)">
-              <!-- Tarjeta 1 -->
-              <div class="carousel-card">
-                <div class="card-content">
-                  <h4>El termo también tiene su lugar</h4>
-                  <p>
-                    Espacio en el interior diseñado específicamente para colocar un termo de 500 ml en posición vertical. Y si lo preferís, también puedes colocar un termo de 1L en posición horizontal. 
-                  </p>
-                </div>
-                <div class="card-image">
-                  <img src="assets/cards/card-1.png" alt="Interior organizado MATEA">
-                </div>
-              </div>
-
-              <!-- Tarjeta 2 -->
-              <div class="carousel-card">
-                <div class="card-content">
-                  <h4>No es un accesorio, es parte de la experiencia</h4>
-                  <p>
-                    Pouch extraíble y elegante, con cremallera invertida . Un detalle invisible para otros, imprescindible para vos.
-                  </p>
-                </div>
-                <div class="card-image">
-                  <img src="assets/cards/card-2.png" alt="Yerbera integrada MATEA">
-                </div>
-              </div>
-
-              <!-- Tarjeta 3 -->
+              
+               <!-- Tarjeta 1 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>El detalle que cambia todo</h4>
@@ -116,7 +94,7 @@
                 </div>
               </div>
 
-              <!-- Tarjeta 4 -->
+               <!-- Tarjeta 2 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Mucho más que un bolso de mate</h4>
@@ -129,7 +107,47 @@
                 </div>
               </div>
 
+              <!-- Tarjeta 3-->
+              <div class="carousel-card">
+                <div class="card-content">
+                  <h4>El termo también tiene su lugar</h4>
+                  <p>
+                    Espacio en el interior diseñado específicamente para colocar un termo de 500 ml en posición vertical. Y si lo preferís, también puedes colocar un termo de 1L en posición horizontal. 
+                  </p>
+                </div>
+                <div class="card-image">
+                  <img src="assets/cards/card-1.png" alt="Interior organizado MATEA">
+                </div>
+              </div>
+
+               <!-- Tarjeta 4 -->
+              <div class="carousel-card">
+                <div class="card-content">
+                  <h4>Todo en su sitio, más allá del mate</h4>
+                  <p>
+                  Tu ritual y tu vida diaria conviven en armonía. El interior está diseñado con bolsillos estratégicos para tus esenciales e incorpora una cinta sujetallaves. Nunca más tendrás que "bucear" en el fondo del bolso para entrar a casa.
+                  </p>
+                </div>
+                <div class="card-image">
+                  <img src="assets/cards/card-6.png" alt="Bolso MATEA listo para salir">
+                </div>
+              </div>
+
               <!-- Tarjeta 5 -->
+              <div class="carousel-card">
+                <div class="card-content">
+                  <h4>No es un accesorio, es parte de la experiencia</h4>
+                  <p>
+                    Pouch extraíble y elegante, con cremallera invertida . Un detalle invisible para otros, imprescindible para vos.
+                  </p>
+                </div>
+                <div class="card-image">
+                  <img src="assets/cards/card-2.png" alt="Yerbera integrada MATEA">
+                </div>
+              </div>
+
+
+              <!-- Tarjeta 6 -->
               <div class="carousel-card">
                 <div class="card-content">
                   <h4>Acabados de precisión</h4>
@@ -142,18 +160,7 @@
                 </div>
               </div>
 
-              <!-- Tarjeta 6 -->
-              <div class="carousel-card">
-                <div class="card-content">
-                  <h4>Todo en su sitio, más allá del mate</h4>
-                  <p>
-                  Tu ritual y tu vida diaria conviven en armonía. El interior está diseñado con bolsillos estratégicos para tus esenciales e incorpora una cinta sujetallaves. Nunca más tendrás que "bucear" en el fondo del bolso para entrar a casa.
-                  </p>
-                </div>
-                <div class="card-image">
-                  <img src="assets/cards/card-6.png" alt="Bolso MATEA listo para salir">
-                </div>
-              </div>
+             
 
             </div>
           </div>
@@ -202,7 +209,8 @@
             Extraíble, elegante y práctico: lo usás cuando lo necesitás y desaparece
             cuando no. MATEA entiende que cada detalle debe adaptarse a vos.
           </p> -->
-          <a routerLink="/home/product-sale" class="btn video-btn">Comprar</a>
+          <!-- <a routerLink="/home/product-sale" class="btn video-btn">Comprar</a> -->
+          <button (click)="scrollToForm()" class="btn video-btn">Comprar</button>
         </div>
       </div>
     </div>
@@ -210,7 +218,7 @@
 </section>
 
 <!-- Polaroid Section -->
-<section class="polaroid-section">
+<section class="polaroid-section ">
   <div class="container-fluid ">
     <div class="row">
       <div class="col-12 text-center">

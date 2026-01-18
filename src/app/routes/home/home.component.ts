@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private initSectionAnimations() {
     // Excluimos hero-section y main-product-section (tiene background-attachment: fixed)
-    const sections = document.querySelectorAll('.section:not(.hero-section):not(.main-product-section)');
+    const sections = document.querySelectorAll('.section:not(.hero-section):not(.main-product-section),.polaroid-section');
 
     sections.forEach((section: any) => {
       // Estado inicial
@@ -420,5 +420,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showSuccessPopup = false;
     this.submitSuccess = false;
     window.open('https://www.instagram.com/mateabags/', '_blank');
+  }
+
+  scrollToForm() {
+    const formSection = document.querySelector('.form-section');
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

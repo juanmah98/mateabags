@@ -18,12 +18,12 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./routes/home/home.component').then(m => m.HomeComponent),
-    canActivate: [homeDateGuard]  // TODO: Descomentar antes de producción
+    /* canActivate: [homeDateGuard]  */ // TODO: Descomentar antes de producción
   },
   {
     path: 'home/product-sale',
     loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent),
-    canActivate: [homeDateGuard]
+    /* canActivate: [homeDateGuard] */
   },
   // Legal routes
   {

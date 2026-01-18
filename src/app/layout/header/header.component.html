@@ -1,11 +1,15 @@
 <header class="header" [class.header-transparent]="isHomePage && isScrolled">
   <div class="container-fluid">
     <div class="row align-items-center">
-      <div class="col-12">
+      <div class="col-12 d-flex justify-content-between">
         <div class="logo">
-          <a routerLink="/">
+          <a (click)="scrollToTop()" style="cursor: pointer;">
             <img src="assets/logos/M-single.png" alt="MATEA Logo" class="logo-img">
           </a>
+        </div>
+
+         <div class="logo-matero">
+            <img src="assets/logos/header-matero.png" alt="HOLA MATERO" class="matero-img">
         </div>
       </div>
     </div>

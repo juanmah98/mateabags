@@ -13,20 +13,20 @@ import { filter } from 'rxjs/operators';
 export class HeaderComponent implements OnInit {
   isScrolled = false;
   isHomePage = false;
-  
-  constructor(private router: Router) {}
-  
+
+  constructor(private router: Router) { }
+
   ngOnInit() {
     // Detectar la ruta actual
     this.checkCurrentRoute();
-    
+
     // Verificar scroll inicial
     setTimeout(() => {
       if (this.isHomePage) {
         this.checkScroll();
       }
     }, 0);
-    
+
     // Suscribirse a los cambios de ruta
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -40,30 +40,39 @@ export class HeaderComponent implements OnInit {
         }, 0);
       });
   }
-  
+
   private checkCurrentRoute() {
     // El header será transparente al hacer scroll en home y waitlist
     const currentUrl = this.router.url;
-    this.isHomePage = currentUrl === '/' || 
-                      currentUrl === '/home' || 
-                      currentUrl === '/waitlist' ||
-                      currentUrl.startsWith('/waitlist');
-    
+    this.isHomePage = currentUrl === '/' ||
+      currentUrl === '/home' ||
+      currentUrl === '/waitlist' ||
+      currentUrl.startsWith('/waitlist');
+
     if (this.isHomePage) {
       this.checkScroll();
     } else {
       this.isScrolled = false;
     }
   }
-  
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     if (this.isHomePage) {
       this.checkScroll();
     }
   }
-  
+
   private checkScroll() {
     this.isScrolled = window.scrollY > 10;
+  }
+
+  scrollToTop() {
+    // Siempre navegamos a la página principal y hacemos scroll al top
+    this.router.navigate(['/']).then(() => {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
+    });
   }
 }

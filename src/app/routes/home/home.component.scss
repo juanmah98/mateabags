@@ -46,6 +46,11 @@ body {
      /*  text-shadow: 4px 4px 6px rgba(155, 155, 155, 0.8); */
     }
 
+    .logo-img {
+      width: 50%;
+      height: auto;
+    }
+
     .hero-subtitle {
       font-size: 1.3rem;
       font-family: 'Playfair Display', serif;
@@ -53,6 +58,10 @@ body {
       color: var(--color-text-light);
       margin-bottom: 2rem;
     }
+
+  /*   .btn{
+      border-radius: 100px!important;
+    } */
   }
 
 /* Tagline Section */
@@ -395,8 +404,11 @@ body {
 @media (max-width: 992px) {
   .product-gallery-section {
     .gallery-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 20px;
+      .gallery-item img {
+        height: 250px;
+      }
     }
   }
 }
@@ -597,7 +609,7 @@ body {
 /* Main Product Section */
 .main-product-section {
   background-attachment: fixed;
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
@@ -607,18 +619,7 @@ body {
   overflow: hidden;
   position: relative;
 
-  .main-product-image {
-    text-align: center;
-    height: 50%;
-
-    img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 0;
-      box-shadow: none;
-    }
-  }
+ 
 }
 
 .main-product-section2 {
@@ -660,7 +661,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-section {
-    padding-top: 80px;
+    padding-top: 90px;
 
     .hero-content {
       padding: 0 20px;
@@ -732,10 +733,24 @@ body {
     width: 100%;
     margin-bottom: 6rem;
   }
+
+  .main-product-section{
+    background-attachment: scroll;
+  }
+  .img-polaroid {
+    width: 90%;
+    height: auto;
+}
 }
 
 @media (max-width: 576px) {
-  .hero-section .hero-content {
+  .hero-section{
+    margin-top: 3rem;
+    padding-top: 22rem;
+    min-height: 70dvh;
+    height: 70dvh;
+  } 
+  .hero-content {
     .hero-title {
       font-size: 3rem;
     }
@@ -778,6 +793,13 @@ body {
       }
     }
   }
+   .main-product-section{
+    height: 70dvh;
+  }
+    .img-polaroid {
+    width: 100%;
+    height: auto;
+}
 }
 
 /* Success Popup */

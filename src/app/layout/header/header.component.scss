@@ -11,7 +11,7 @@
   transition: all 0.3s ease;
   
   .logo {
-    margin-left: 2rem;
+    margin-left: 1rem;
     text-align: left;
     
     a {
@@ -20,6 +20,16 @@
     }
     
     .logo-img {
+      height: 30px;
+      width: auto;
+    }
+  }
+
+  .logo-matero {
+    margin-right: 1rem;
+    text-align: center;
+    
+    .matero-img {
       height: 30px;
       width: auto;
     }
