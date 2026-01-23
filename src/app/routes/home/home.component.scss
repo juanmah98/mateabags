@@ -119,6 +119,10 @@ body {
       padding-right: 50px;
       cursor: grab;
       user-select: none;
+      /* Permitir solo scroll horizontal en dispositivos táctiles */
+      touch-action: pan-x;
+      /* Mejorar rendimiento en móviles */
+      -webkit-overflow-scrolling: touch;
     }
 
     .carousel-card {

@@ -286,6 +286,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startX = event.touches[0].clientX;
     this.currentX = this.startX;
     this.dragOffset = 0;
+    // Prevenir el scroll vertical mientras se interactúa con el carrusel
+    event.preventDefault();
   }
 
   onTouchMove(event: TouchEvent) {
@@ -293,6 +295,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.currentX = event.touches[0].clientX;
     this.dragOffset = this.currentX - this.startX;
+
+    // Prevenir el scroll vertical mientras se arrastra el carrusel
+    event.preventDefault();
 
     const track = document.querySelector('.carousel-track') as HTMLElement;
     const container = document.querySelector('.carousel-container') as HTMLElement;
