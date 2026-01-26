@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
 import { Product } from '../../models/product.model';
@@ -7,7 +8,7 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-product-sale',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './product-sale.component.html',
   styleUrl: './product-sale.component.scss'
 })
@@ -53,12 +54,21 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
   showModal = false;
   modalImage = '';
 
+  // Presale validation
+  showValidationModal = false;
+  validationEmail = '';
+  validationError = '';
+  isValidating = false;
+  isAccessGranted = false;
+  validationRequired = false;
+
   constructor(
     private supabaseService: SupabaseService,
     private router: Router
   ) { }
 
   ngOnInit() {
+    this.checkPresaleAccess();
     this.loadProduct();
   }
 
@@ -174,5 +184,95 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
         }]
       }
     });
+  }
+
+  // Presale validation methods
+  private checkPresaleAccess() {
+    // Import constants
+    const { ENABLED, DEADLINE } = (window as any).APP_CONSTANTS?.PRESALE_VALIDATION || { ENABLED: true, DEADLINE: new Date('2026-01-29T20:00:00+01:00') };
+
+    // Check if presale validation is enabled
+    if (!ENABLED) {
+      this.isAccessGranted = true;
+      this.validationRequired = false;
+      return;
+    }
+
+    // Check if deadline has passed
+    if (this.isAfterDeadline(DEADLINE)) {
+      this.isAccessGranted = true;
+      this.validationRequired = false;
+      return;
+    }
+
+    // Check localStorage for existing validation
+    const storedAccess = localStorage.getItem('presale_access_verified');
+    if (storedAccess) {
+      try {
+        const accessData = JSON.parse(storedAccess);
+        // Verify the stored data is still valid (within 7 days)
+        const storedDate = new Date(accessData.timestamp);
+        const daysSinceValidation = (Date.now() - storedDate.getTime()) / (1000 * 60 * 60 * 24);
+
+        if (daysSinceValidation < 7 && accessData.verified) {
+          this.isAccessGranted = true;
+          this.validationRequired = false;
+          return;
+        }
+      } catch (e) {
+        // Invalid stored data, clear it
+        localStorage.removeItem('presale_access_verified');
+      }
+    }
+
+    // If we get here, validation is required
+    this.validationRequired = true;
+    this.showValidationModal = true;
+    this.isAccessGranted = false;
+  }
+
+  private isAfterDeadline(deadline: Date): boolean {
+    return new Date() > new Date(deadline);
+  }
+
+  async validatePresaleAccess() {
+    // Reset error
+    this.validationError = '';
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!this.validationEmail || !emailRegex.test(this.validationEmail)) {
+      this.validationError = 'Por favor, introduce un correo electrónico válido.';
+      return;
+    }
+
+    this.isValidating = true;
+
+    try {
+      // Check if email exists in waitlist
+      const exists = await this.supabaseService.emailExists(this.validationEmail);
+
+      if (exists) {
+        // Store validation in localStorage
+        const accessData = {
+          email: this.validationEmail,
+          timestamp: new Date().toISOString(),
+          verified: true
+        };
+        localStorage.setItem('presale_access_verified', JSON.stringify(accessData));
+
+        // Grant access
+        this.isAccessGranted = true;
+        this.showValidationModal = false;
+        this.validationRequired = false;
+      } else {
+        this.validationError = 'Este correo no está en la lista de preventa. Si crees que es un error, contacta con nosotros.';
+      }
+    } catch (error) {
+      console.error('Error validating email:', error);
+      this.validationError = 'Ha ocurrido un error. Por favor, inténtalo de nuevo.';
+    } finally {
+      this.isValidating = false;
+    }
   }
 }

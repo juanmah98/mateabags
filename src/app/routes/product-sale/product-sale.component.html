@@ -28,8 +28,19 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="container" *ngIf="!isLoading">
+    <!-- Blurred Preview (when validation required) -->
+    <div class="blurred-preview" *ngIf="!isLoading && validationRequired && !isAccessGranted">
+        <div class="container py-5">
+            <div class="preview-content">
+                <div class="preview-image"></div>
+                <div class="preview-text"></div>
+                <div class="preview-text short"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (only when access granted) -->
+    <div class="container" *ngIf="!isLoading && (isAccessGranted || !validationRequired)">
         <div class="row align-items-start">
             <!-- Left Column: Images -->
             <div class="col-lg-6 mb-5 mb-lg-0">
@@ -324,5 +335,61 @@
     <!-- Image Modal / Lightbox -->
     <div class="image-modal" *ngIf="showModal" (click)="closeImageModal()">
         <img [src]="modalImage" alt="{{product.title}}" class="modal-image" (click)="$event.stopPropagation()">
+    </div>
+
+    <!-- Presale Validation Modal -->
+    <div class="validation-overlay" *ngIf="showValidationModal">
+        <div class="validation-modal">
+            <div class="validation-header">
+                <h2 class="validation-title">Acceso Exclusivo a Preventa</h2>
+                <p class="validation-subtitle">MATEA ORIGIN - Edición Limitada</p>
+            </div>
+
+            <div class="validation-body">
+                <p class="validation-message">
+                    Introduce el correo electrónico registrado en nuestra lista de espera para acceder a la preventa exclusiva.
+                </p>
+
+                <form (ngSubmit)="validatePresaleAccess()" class="validation-form">
+                    <div class="form-group">
+                        <label for="presale-email" class="form-label">Correo Electrónico</label>
+                        <input 
+                            type="email" 
+                            id="presale-email"
+                            class="form-control"
+                            [(ngModel)]="validationEmail"
+                            name="validationEmail"
+                            placeholder="tu@email.com"
+                            [disabled]="isValidating"
+                            required
+                        >
+                    </div>
+
+                    <div class="error-message" *ngIf="validationError">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        {{validationError}}
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="btn-validate"
+                        [disabled]="isValidating"
+                    >
+                        <span *ngIf="!isValidating">Verificar Acceso</span>
+                        <span *ngIf="isValidating">
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            Verificando...
+                        </span>
+                    </button>
+                </form>
+
+                <div class="validation-footer">
+                    <p class="small text-muted">
+                        ¿No estás en la lista? 
+                        <a href="/" class="text-decoration-underline">Regístrate aquí</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </div> <!-- End product-sale-container -->

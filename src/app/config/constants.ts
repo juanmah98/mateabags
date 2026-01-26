@@ -36,7 +36,17 @@ export const APP_CONSTANTS = {
     STORAGE_KEYS: {
         ACCESS_KEY: 'home_access_key',
         CART: 'mateabags_cart',
-        USER_PREFERENCES: 'user_preferences'
+        USER_PREFERENCES: 'user_preferences',
+        PRESALE_ACCESS: 'presale_access_verified'
+    },
+
+    // Presale validation configuration
+    PRESALE_VALIDATION: {
+        // Set to false to disable presale validation
+        ENABLED: true,
+        // Deadline: January 29, 2026 at 20:00 Spain time (CET = UTC+1)
+        DEADLINE: new Date('2026-01-29T20:00:00+01:00'),
+        STORAGE_KEY: 'presale_access_verified'
     },
 
     // Validaciones
