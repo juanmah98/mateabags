@@ -288,49 +288,82 @@
                         </div>
                     </div>
 
-                    <!-- Paso 4: Simulación de Pago -->
+                    <!-- Paso 4: Pagar con Stripe -->
                     <div *ngIf="currentStep === 4">
-                        <div class="card mb-4" formGroupName="payment">
+                        <!-- Cupón de Descuento -->
+                        <div class="card mb-3">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0"><i class="bi bi-credit-card-2-front-fill me-2"></i> Método de Pago (Simulación)
-                                </h5>
+                                <h5 class="mb-0"><i class="bi bi-tag-fill me-2"></i> ¿Tienes un cupón?</h5>
                             </div>
                             <div class="card-body">
-                                <div class="alert alert-info small mb-3">
-                                    <i class="fas fa-info-circle me-1"></i> Modo prueba: Puedes usar cualquier dato
-                                    ficticio.
+                                <div *ngIf="!appliedCoupon" class="input-group">
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        [(ngModel)]="couponCode" 
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="Código de cupón"
+                                        [disabled]="isLoading"
+                                    />
+                                    <button 
+                                        class="btn btn-outline-primary" 
+                                        type="button" 
+                                        (click)="validateCoupon()" 
+                                        [disabled]="!couponCode || isLoading">
+                                        Aplicar
+                                    </button>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre en la tarjeta</label>
-                                    <input type="text" class="form-control" formControlName="cardName"
-                                        placeholder="Como aparece en la tarjeta">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Número de tarjeta</label>
-                                    <input type="text" class="form-control" formControlName="cardNumber"
-                                        placeholder="0000 0000 0000 0000" maxlength="16">
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Fecha de expiración</label>
-                                        <input type="text" class="form-control" formControlName="expiry"
-                                            placeholder="MM/YY" maxlength="5">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">CVV</label>
-                                        <input type="text" class="form-control" formControlName="cvv" placeholder="123"
-                                            maxlength="3">
-                                    </div>
+                                
+                                <div *ngIf="appliedCoupon" class="alert alert-success d-flex justify-content-between align-items-center mb-0">
+                                    <span>
+                                        <i class="bi bi-check-circle-fill me-2"></i>
+                                        <strong>{{ appliedCoupon.code }}</strong> aplicado (-€{{ discount.toFixed(2) }})
+                                    </span>
+                                    <button 
+                                        type="button" 
+                                        class="btn-close" 
+                                        (click)="removeCoupon()"
+                                        aria-label="Quitar cupón">
+                                    </button>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Pago con Stripe -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0"><i class="bi bi-credit-card-2-front-fill me-2"></i> Método de Pago
+                                </h5>
+                            </div>
+                            <div class="card-body text-center py-4">
+                                <p class="mb-3">Te redirigiremos a Stripe para completar el pago de forma segura.</p>
+                                <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                                    <i class="bi bi-shield-check text-success"></i>
+                                    <small class="text-muted">Pago seguro procesado por Stripe</small>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-outline-primary flex-fill py-3"
-                                (click)="prevStep()">Atrás</button>
-                            <button type="submit" class="btn btn-primary flex-fill py-3"
+                                (click)="prevStep()" [disabled]="isLoading">Atrás</button>
+                            <button type="submit" class="btn btn-primary flex-fill py-3 position-relative"
                                 [disabled]="checkoutForm.invalid || isLoading">
-                                {{ isLoading ? 'Procesando...' : 'Pagar ' + (total | currency:'EUR') }}
+                                <span *ngIf="!isLoading">
+                                    <i class="bi bi-lock-fill me-2"></i>Pagar {{ total | currency:'EUR' }}
+                                </span>
+                                <span *ngIf="isLoading">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Procesando orden...
+                                </span>
                             </button>
+                        </div>
+                        
+                        <div *ngIf="isLoading" class="alert alert-info mt-3 text-center">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            Estamos preparando tu pago seguro con Stripe...
                         </div>
                     </div>
 
@@ -368,6 +401,10 @@
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Subtotal</span>
                                 <span>{{ subtotal | currency:'EUR' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2" *ngIf="discount > 0">
+                                <span class="text-success"><i class="bi bi-tag-fill me-1"></i>Descuento</span>
+                                <span class="text-success">-€{{ discount.toFixed(2) }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
                                 <span class="text-muted">Envío</span>

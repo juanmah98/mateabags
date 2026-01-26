@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../core';
+import { StripeService } from '../../core/services/stripe.service';
 import { CreateOrderPayload } from '../../models/checkout.model';
 import { Currency, AddressKind } from '../../models/enums';
 import jsPDF from 'jspdf';
@@ -11,7 +12,7 @@ import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
 })
@@ -21,6 +22,7 @@ export class CheckoutComponent implements OnInit {
   subtotal = 0;
   shippingCost = 5.00;
   total = 0;
+  discount = 0;
   isLoading = false;
   isSuccess = false;
   createdOrderId = '';
@@ -29,12 +31,17 @@ export class CheckoutComponent implements OnInit {
   orderData: any = null;
   completedItems: any[] = [];
 
+  // Stripe & Cupones
+  couponCode = '';
+  appliedCoupon: any = null;
+
   currentStep = 1;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private supabaseService: SupabaseService
+    private supabaseService: SupabaseService,
+    private stripeService: StripeService
   ) {
     // Recuperar items del estado de navegación
     const nav = this.router.getCurrentNavigation();
@@ -95,7 +102,44 @@ export class CheckoutComponent implements OnInit {
 
   calculateTotals() {
     this.subtotal = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    this.total = this.subtotal + this.shippingCost;
+    // Si hay descuento aplicado, mantenerlo
+    const finalSubtotal = this.appliedCoupon ? (this.appliedCoupon.new_total || this.subtotal) - this.shippingCost : this.subtotal;
+    this.total = finalSubtotal + this.shippingCost;
+  }
+
+  validateCoupon() {
+    if (!this.couponCode || this.couponCode.trim() === '') {
+      alert('Por favor ingresa un código de cupón');
+      return;
+    }
+
+    this.isLoading = true;
+    this.stripeService.validateCoupon(this.couponCode, this.subtotal).subscribe({
+      next: (result) => {
+        this.isLoading = false;
+        if (result.valid) {
+          this.appliedCoupon = result;
+          this.discount = result.discount_amount || 0;
+          this.total = (result.new_total || this.total) + this.shippingCost;
+          alert(`✅ Cupón "${result.code}" aplicado! Descuento: €${this.discount.toFixed(2)}`);
+        } else {
+          alert(`❌ Cupón inválido: ${result.error || 'Código no encontrado'}`);
+          this.couponCode = '';
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Error al validar cupón:', err);
+        alert('Error al validar el cupón. Intenta nuevamente.');
+      }
+    });
+  }
+
+  removeCoupon() {
+    this.couponCode = '';
+    this.appliedCoupon = null;
+    this.discount = 0;
+    this.calculateTotals();
   }
 
   nextStep() {
@@ -130,11 +174,10 @@ export class CheckoutComponent implements OnInit {
     this.isLoading = true;
     const formValue = this.checkoutForm.value;
 
-    // Transformar la dirección del formulario al modelo de Supabase
+    // Transformar dirección
     const addressForm = formValue.address;
     let line1 = `${addressForm.street} ${addressForm.number}`;
 
-    // Añadir piso y puerta si existen
     if (addressForm.floor || addressForm.door) {
       const floorDoor = [];
       if (addressForm.floor) floorDoor.push('Piso ' + addressForm.floor);
@@ -142,54 +185,58 @@ export class CheckoutComponent implements OnInit {
       line1 += `, ${floorDoor.join(' ')}`;
     }
 
-    const payload: CreateOrderPayload = {
-      customer: formValue.customer,
-      address: {
-        line1: line1,                                    // Calle + Número + Piso + Puerta
-        line2: addressForm.extraInstructions || undefined, // Indicaciones extras
-        city: addressForm.city,                           // Ciudad
-        state: addressForm.town,                          // Población (mapeado a state)
-        postcode: addressForm.postcode,                   // Código Postal
-        country: addressForm.country,                     // País
-        kind: AddressKind.SHIPPING,
-        label: 'Envío',
-        recipient_name: formValue.customer.name
-      },
-      items: this.cartItems.map(item => ({
-        product_id: item.id,
-        title: item.title,
-        sku: item.sku,
-        quantity: item.quantity,
-        unit_price: item.price,
-        total_price: item.price * item.quantity,
-        is_gift: formValue.gift.is_gift,
-        gift_message: formValue.gift.is_gift ? formValue.gift.gift_message : null
-      })),
-      shipping_cost: this.shippingCost,
-      currency: Currency.EUR, // Asumimos EUR por defecto
-      note: 'Compra Web - Simulación'
+    // Preparar datos para Stripe
+    const customer = {
+      name: formValue.customer.name,
+      email: formValue.customer.email,
+      phone: formValue.customer.phone
     };
 
-    const { data, error } = await this.supabaseService.createOrder(payload);
+    const address = {
+      line1: line1,
+      line2: addressForm.extraInstructions || undefined,
+      city: addressForm.city,
+      state: addressForm.town,
+      postcode: addressForm.postcode,
+      country: addressForm.country
+    };
 
-    this.isLoading = false;
+    const items = this.cartItems.map(item => ({
+      product_id: item.id,
+      title: item.title,
+      sku: item.sku || '',
+      quantity: item.quantity,
+      unit_price: item.price,
+      total_price: item.price * item.quantity,
+      is_gift: formValue.gift.is_gift,
+      gift_message: formValue.gift.is_gift ? formValue.gift.gift_message : undefined
+    }));
 
-    if (error) {
-      console.error('Error creating order:', error);
-      alert('Hubo un error al procesar tu pedido. Por favor intenta nuevamente.');
-    } else if (data) {
-      this.isSuccess = true;
-      this.createdOrderId = data.order_id;
-      this.orderHashCode = this.generateOrderHash(data.order_id);
-      this.orderDate = new Date();
+    // Llamar a Stripe para crear sesión
+    this.stripeService.createCheckoutSession(
+      customer,
+      address,
+      items,
+      this.shippingCost,
+      this.appliedCoupon?.code,
+      'Compra Web - Stripe Checkout'
+    ).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        console.log('Checkout session created:', response);
 
-      // Guardar datos del pedido antes de limpiar
-      this.orderData = formValue;
-      this.completedItems = [...this.cartItems];
+        // Guardar order_id por si el usuario vuelve
+        localStorage.setItem('pending_order_id', response.order_id);
 
-      // Limpiar estado del carrito
-      this.cartItems = [];
-    }
+        // Redirigir a Stripe
+        this.stripeService.redirectToCheckout(response.checkout_url);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Error creating checkout session:', err);
+        alert('Hubo un error al procesar tu pedido. Por favor intenta nuevamente.');
+      }
+    });
   }
 
   // Genera un hash corto de 8 dígitos a partir del order ID UUID
