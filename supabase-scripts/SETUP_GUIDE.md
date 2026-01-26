@@ -23,12 +23,12 @@ Necesitas estas 2 claves:
 
 **Publishable Key** (empieza con `pk_test_...`)
 ```
-pk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+pk_test_[TU_PUBLISHABLE_KEY_AQUI]
 ```
 
 **Secret Key** (empieza con `sk_test_...`) - ⚠️ NUNCA compartir
 ```
-sk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+sk_test_[TU_SECRET_KEY_AQUI]
 ```
 
 ---
@@ -89,7 +89,7 @@ sk_test_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 3. Agregar estas variables (una por una):
 
 ```
-STRIPE_SECRET_KEY = sk_test_XXXXXXXXXXXXXXXXXXXXXXXX
+STRIPE_SECRET_KEY = sk_test_[TU_CLAVE_SECRETA_AQUI]
 ```
 
 4. Click en **"Add secret"** o **"Save"**
@@ -126,7 +126,7 @@ En **"Select events to listen to"**, marcar:
 2. En la sección **"Signing secret"**, click en **"Reveal"**
 3. Copiar el secret (empieza con `whsec_...`)
    ```
-   whsec_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   whsec_[TU_WEBHOOK_SECRET_AQUI]
    ```
 
 ### 5.4 Agregar Webhook Secret a Supabase
@@ -134,7 +134,7 @@ En **"Select events to listen to"**, marcar:
 1. Volver a: **Supabase Dashboard** → **Project Settings** → **Edge Functions** → **Secrets**
 2. Agregar:
    ```
-   STRIPE_WEBHOOK_SECRET = whsec_XXXXXXXXXXXXXXXXXXXXXXXX
+   STRIPE_WEBHOOK_SECRET = whsec_[TU_WEBHOOK_SECRET_AQUI]
    ```
 3. Guardar
 

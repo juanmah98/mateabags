@@ -99,8 +99,8 @@ Esta carpeta contiene todos los archivos necesarios para implementar la pasarela
 Configurar en **Supabase Dashboard** → **Project Settings** → **Edge Functions** → **Secrets**:
 
 ```bash
-STRIPE_SECRET_KEY=sk_test_XXXXXXXXXXXXXXXXXXXXXXXX
-STRIPE_WEBHOOK_SECRET=whsec_XXXXXXXXXXXXXXXXXXXXXXXX
+STRIPE_SECRET_KEY=sk_test_[TU_CLAVE_AQUI]
+STRIPE_WEBHOOK_SECRET=whsec_[TU_SECRET_AQUI]
 ```
 
 ---
