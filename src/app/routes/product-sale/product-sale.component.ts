@@ -14,23 +14,24 @@ import { Product } from '../../models/product.model';
 export class ProductSaleComponent implements OnInit, AfterViewInit {
   // Inicializar con valores por defecto o vacíos
   product = {
-    title: 'MATEA ORIGIN',
-    subtitle: 'EDICIÓN LIMITADA',
-    description: 'Un compartimento exterior diseñado para sujetarlo cuando está servido.',
-    price: 128,
-    currency: '€'
+    title: '',
+    subtitle: '',
+    description: '',
+    price: 0,
+    currency: ''
   };
 
   images = [
-    'assets/product-sale/imagen-3.jpg',
-    'assets/product-sale/imagen-2.jpg',
-    'assets/product-sale/product-0.png',
-    'assets/product-sale/product-1.png',
-    'assets/product-sale/product-2.jpg',
-    'assets/product-sale/product-3.jpg',
-    'assets/product-sale/product-4.png',
-    'assets/product-sale/product-5.png',
-    'assets/product-sale/product-6.jpg',
+    'assets/product-sale/imagen-3.webp',
+    'assets/product-sale/imagen-2.webp',
+    'assets/product-sale/product-0.webp',
+    'assets/product-sale/product-1.webp',
+    'assets/product-sale/product-7.webp',
+    'assets/product-sale/product-2.webp',
+    'assets/product-sale/product-3.webp',
+    'assets/product-sale/product-4.webp',
+    'assets/product-sale/product-5.webp',
+    'assets/product-sale/product-6.webp',
 
   ];
 

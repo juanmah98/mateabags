@@ -1,5 +1,35 @@
 <div class="product-sale-container section-light">
-    <div class="container">
+    <!-- Loading Spinner -->
+    <div class="loading-overlay" *ngIf="isLoading">
+        <div class="loading-content">
+            <!-- Imagen de loading -->
+            <div class="text-center mb-4">
+                <img src="assets/principales/loading.jpg" alt="Mateabags" class="loading-image">
+            </div>
+            
+            <!-- Spinner -->
+            <div class="mb-3">
+                <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#1c352d" stroke-width="6" opacity="0.2"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#1c352d" stroke-width="6" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round">
+                        <animateTransform
+                            attributeName="transform"
+                            type="rotate"
+                            from="0 50 50"
+                            to="360 50 50"
+                            dur="1.5s"
+                            repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+            
+            <!-- Texto -->
+            <p class="loading-text">Cargando producto...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" *ngIf="!isLoading">
         <div class="row align-items-start">
             <!-- Left Column: Images -->
             <div class="col-lg-6 mb-5 mb-lg-0">
@@ -289,10 +319,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> <!-- End container -->
     
     <!-- Image Modal / Lightbox -->
     <div class="image-modal" *ngIf="showModal" (click)="closeImageModal()">
         <img [src]="modalImage" alt="{{product.title}}" class="modal-image" (click)="$event.stopPropagation()">
     </div>
-</div>
+</div> <!-- End product-sale-container -->
