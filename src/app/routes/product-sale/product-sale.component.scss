@@ -40,12 +40,43 @@ $color-border: #E5E0D8;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.02);
+        
+        .zoom-indicator {
+            opacity: 1;
+        }
+    }
 
     .main-image {
         width: 100%;
         height: auto;
         object-fit: cover;
         aspect-ratio: 4/3; // Keeping a nice ratio
+    }
+    
+    .zoom-indicator {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        
+        i {
+            font-size: 1.2rem;
+            color: $color-dark;
+        }
     }
 }
 
@@ -58,6 +89,7 @@ $color-border: #E5E0D8;
     opacity: 0.7;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    flex-shrink: 0; // Prevent thumbnails from shrinking
 
     &.active,
     &:hover {
@@ -69,6 +101,69 @@ $color-border: #E5E0D8;
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+}
+
+.gallery-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.thumbnails-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    
+    &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+}
+
+.thumbnails-track {
+    display: flex;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.gallery-arrow {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    i {
+        font-size: 1rem;
+        color: $color-dark;
+    }
+    
+    &:hover:not(:disabled) {
+        background: $color-dark;
+        border-color: $color-dark;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+        
+        i {
+            color: white;
+        }
+    }
+    
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        box-shadow: none;
     }
 }
 
@@ -162,4 +257,209 @@ $color-border: #E5E0D8;
 
 .text-muted {
     color: #6c757d;
+}
+
+// Image Modal / Lightbox
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    cursor: zoom-out;
+    animation: fadeIn 0.2s ease;
+    padding: 20px;
+    
+    .modal-image {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 4px;
+        cursor: default;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+// Tab Content Styles
+.tab-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+// Ficha Técnica Styles
+.ficha-tecnica-content {
+    .feature-block {
+        .feature-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $color-dark;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #5a645a;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    .specifications-table {
+        .specs-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: $color-dark;
+            text-align: center;
+        }
+
+        .table {
+            border-color: #E5E0D8;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+            thead {
+                background-color: $color-dark;
+                
+                th {
+                    font-family: 'Playfair Display', serif;
+                    font-weight: 600;
+                    font-size: 1rem;
+                    color: var(--color-text-dark, $color-dark);
+                    padding: 1rem;
+                    border: none;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+            }
+
+            tbody {
+                tr {
+                    transition: background-color 0.2s ease;
+
+                    &:hover {
+                        background-color: rgba(247, 244, 238, 0.5);
+                    }
+
+                    &.table-highlight {
+                        background-color: rgba(247, 244, 238, 0.8);
+                        border-left: 3px solid $color-dark;
+                        
+                        td {
+                            font-weight: 500;
+                        }
+                    }
+
+                    td {
+                        padding: 0.9rem 1rem;
+                        font-size: 0.95rem;
+                        color: #4a4a4a;
+                        vertical-align: middle;
+                        border-color: #E5E0D8;
+
+                        &:first-child {
+                            font-weight: 600;
+                            color: $color-dark;
+                            width: 35%;
+                        }
+
+                        &:last-child {
+                            color: #5a645a;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Información Content Styles
+.informacion-content {
+    padding: 0.5rem 1rem;
+
+    .info-hero {
+        .info-tagline {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: $color-dark;
+            line-height: 1.6;
+            font-style: italic;
+
+            .highlight {
+                color: #8B9A8B;
+                font-weight: 700;
+                font-style: normal;
+            }
+        }
+    }
+
+    .info-main-text {
+        max-width: 800px;
+        margin: 0 auto;
+
+        .info-paragraph {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #5a645a;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+
+            strong {
+                color: $color-dark;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .ficha-tecnica-content {
+        .specifications-table {
+            .table {
+                font-size: 0.85rem;
+
+                thead th {
+                    font-size: 0.9rem;
+                    padding: 0.75rem 0.5rem;
+                }
+
+                tbody td {
+                    padding: 0.7rem 0.5rem;
+                    
+                    &:first-child {
+                        width: 40%;
+                    }
+                }
+            }
+        }
+    }
+
+    .informacion-content {
+        .info-hero .info-tagline {
+            font-size: 1.4rem;
+        }
+
+        .info-main-text .info-paragraph {
+            font-size: 1rem;
+        }
+    }
 }

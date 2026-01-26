@@ -18,8 +18,8 @@ export const APP_CONSTANTS = {
     MIN_ORDER_AMOUNT: 10,
 
     // Configuración de envío
-    DEFAULT_SHIPPING_COST: 5.00,
-    FREE_SHIPPING_THRESHOLD: 50.00,
+    DEFAULT_SHIPPING_COST: 0, // Envío incluido en precio de producto
+    FREE_SHIPPING_THRESHOLD: 0,
 
     // Moneda por defecto
     DEFAULT_CURRENCY: 'EUR',

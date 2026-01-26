@@ -3,18 +3,48 @@
         <div class="row align-items-start">
             <!-- Left Column: Images -->
             <div class="col-lg-6 mb-5 mb-lg-0">
-                <div class="main-image-container mb-3">
+                <div class="main-image-container mb-3" (click)="openImageModal(selectedImage)">
                     <!-- Using placeholder if image fails to load or using a known reliable placeholder service -->
                     <img [src]="selectedImage" alt="{{product.title}}" class="img-fluid main-image"
                         onerror="this.src='https://placehold.co/800x600/E8E8E0/3F4C3C?text=Bag+Image'">
-                </div>
-                <div class="thumbnails-container d-flex gap-3">
-                    @for (img of images; track img) {
-                    <div class="thumbnail-wrapper" [class.active]="selectedImage === img" (click)="selectImage(img)">
-                        <img [src]="img" alt="Thumbnail" class="img-fluid"
-                            onerror="this.src='https://placehold.co/150x150/E8E8E0/3F4C3C?text=Thumb'">
+                    <div class="zoom-indicator">
+                        <i class="bi bi-zoom-in"></i>
                     </div>
-                    }
+                </div>
+                
+                <!-- Gallery with scroll -->
+                <div class="gallery-wrapper position-relative">
+                    <!-- Left Arrow -->
+                    <button 
+                        class="gallery-arrow gallery-arrow-left" 
+                        (click)="scrollGallery('left')"
+                        [disabled]="scrollPosition <= 0"
+                        *ngIf="images.length > 5">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    
+                    <!-- Thumbnails -->
+                    <div class="thumbnails-container" #thumbnailsContainer>
+                        <div class="thumbnails-track d-flex gap-3">
+                            @for (img of images; track img) {
+                            <div class="thumbnail-wrapper" 
+                                 [class.active]="selectedImage === img" 
+                                 (click)="selectImage(img)">
+                                <img [src]="img" alt="Thumbnail" class="img-fluid"
+                                    onerror="this.src='https://placehold.co/150x150/E8E8E0/3F4C3C?text=Thumb'">
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- Right Arrow -->
+                    <button 
+                        class="gallery-arrow gallery-arrow-right" 
+                        (click)="scrollGallery('right')"
+                        [disabled]="scrollPosition >= maxScroll"
+                        *ngIf="images.length > 5">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
                 </div>
             </div>
 
@@ -30,7 +60,11 @@
 
                     <div class="price-container mb-4">
                         <span class="fs-1 fw-bold">{{product.price}}{{product.currency}}</span>
+                        <br>
+                        <span class="fs-6 text-muted">IVA incluido</span>
                     </div>
+
+                   
 
                     <div class="color-selection mb-4">
                         <h5 class="text-uppercase mb-3 fs-6 ls-1">Color</h5>
@@ -55,16 +89,24 @@
                     </div>
 
                     <!-- Trust Signals -->
-                    <div class="trust-signals d-flex justify-content-between text-muted small mb-5">
+                    <div class="trust-signals d-flex justify-content-between text-muted small mb-2">
                         <div class="signal d-flex align-items-center gap-2">
                             <i class="fs-5"><img src="assets/icons/truck-outline.svg" width="24" height="24" alt=""></i>
-                            <span>Envio rapido y seguro</span>
+                            <span>Envio gratis y seguro</span>
                         </div>
                         <div class="signal d-flex align-items-center gap-2">
                             <i class="fs-5"><img src="assets/icons/shield-outline.svg" width="24" height="24"
                                     alt=""></i>
                             <span>Compra asegurada</span>
                         </div>
+                    </div>
+                    <div class="text-muted small signal d-flex align-items-center gap-2">
+                         <i class="bi bi-airplane fs-5"></i>
+                        <span>Envíos disponibles exclusivamente en España (por el momento).</span>
+                    </div>
+                    <div class="text-muted small mb-5 signal d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                        <span>Observa en la descripción el tamaño del Mate Pocket</span>
                     </div>
 
                 </div>
@@ -76,31 +118,181 @@
             <div class="col-12 text-center">
                 <div class="tabs-header mb-4 d-flex justify-content-center gap-5">
                     <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
-                        [class.active]="activeTab === 'descripcion'" (click)="setActiveTab('descripcion')">
-                        Descripcion
+                        [class.active]="activeTab === 'tecnica'" (click)="setActiveTab('tecnica')">
+                        FICHA TÉCNICA
                     </button>
                     <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
                         [class.active]="activeTab === 'informacion'" (click)="setActiveTab('informacion')">
-                        Informacion
+                        INFORMACIÓN
                     </button>
-                    <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
+                    <!-- <button class="btn btn-link text-decoration-none text-uppercase ls-1 tab-btn"
                         [class.active]="activeTab === 'resenas'" (click)="setActiveTab('resenas')">
                         Reseñas
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="tab-content py-4">
-                    @if (activeTab === 'descripcion') {
-                    <p>Detalles adicionales sobre la descripción del producto irían aquí.</p>
+                    @if (activeTab === 'tecnica') {
+                    <div class="ficha-tecnica-content">
+                        <!-- Mate Pocket System Feature -->
+                        <div class="feature-block mb-5">
+                            <h3 class="feature-title">Mate Pocket System</h3>
+                            <p class="feature-description">
+                                El compartimento exterior está diseñado para alojar mates de hasta 8 cm de diámetro, 
+                                manteniéndolos estables, protegidos y siempre a mano. Una solución funcional que convierte 
+                                al mate en parte del diseño, no en un objeto improvisado dentro del bolso.
+                            </p>
+                            <p class="feature-description">
+                                Incluye una almohadilla interna extraíble de 2cm de alto para elevar mates más pequeños 
+                                y asegurar que luzcan perfectos.
+                            </p>
+                        </div>
+
+                        <!-- Diseño estructurado -->
+                        <div class="feature-block mb-5">
+                            <h3 class="feature-title">Diseño estructurado</h3>
+                            <p class="feature-description">
+                                La base y la estructura del bolso están pensadas para mantener la forma incluso cuando se 
+                                transportan objetos pesados como el termo o el portátil, evitando deformaciones y asegurando 
+                                una presencia elegante en todo momento.
+                            </p>
+                        </div>
+
+                        <!-- Interior pensado para el ritual -->
+                        <div class="feature-block mb-5">
+                            <h3 class="feature-title">Interior pensado para el ritual</h3>
+                            <p class="feature-description">
+                                El interior integra compartimentos específicos para los elementos del mate, permitiendo 
+                                llevar cada pieza en su lugar, de forma ordenada, higiénica y accesible.
+                            </p>
+                        </div>
+
+                        <!-- Estética sin concesiones -->
+                        <div class="feature-block mb-5">
+                            <h3 class="feature-title">Estética sin concesiones</h3>
+                            <p class="feature-description">
+                                Cada línea, costura y proporción ha sido diseñada para que MATEA funcione como un bolso 
+                                premium, incluso cuando no llevas mate.
+                            </p>
+                        </div>
+
+                        <!-- Technical Specifications Table -->
+                        <div class="specifications-table mt-5">
+                            <h3 class="specs-title mb-4">Especificaciones técnicas</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Categoría</th>
+                                        <th scope="col">Detalle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sistema sujeción mate</td>
+                                        <td>Mate Pocket System™</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tipo de compartimento de mate</td>
+                                        <td>Compartimento exterior removible</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Compatibilidad del mate</td>
+                                        <td>Apto para mates de hasta 8 cm de diámetro</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ajuste del mate</td>
+                                        <td>Ajuste firme para una sujeción estable y segura</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Accesibilidad</td>
+                                        <td>El mate sobresale ligeramente para facilitar su extracción</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Almohadilla regulable</td>
+                                        <td>Almohadilla interior extraíble, permite ajustar la altura para mates más bajos</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Altura interior del bolso</td>
+                                        <td>25,5 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ancho interior</td>
+                                        <td>36 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estructura</td>
+                                        <td>Diseño estructurado para mantener la forma incluso con carga</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Base</td>
+                                        <td>Base amplia, estable y reforzada</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Protección inferior</td>
+                                        <td>Tacos inferiores de apoyo que elevan el bolso y protegen la base del contacto directo con superficies</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Compartimentos interiores</td>
+                                        <td>Pouch, bolsillo para bombilla, compartimento para portátil o libreta y espacios auxiliares</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Material exterior</td>
+                                        <td>Cuero vegano (PU)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Material interior</td>
+                                        <td>Poliéster reforzado</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Refuerzo estructural</td>
+                                        <td>Lámina interna de acero al manganeso</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Herrajes</td>
+                                        <td>Aleación de zinc</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Edición</td>
+                                        <td>Origin</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     }
                     @if (activeTab === 'informacion') {
-                    <p>Información técnica y especificaciones del producto.</p>
+                    <div class="informacion-content">
+                        <div class="info-hero mb-5 text-center">
+                            <h3 class="info-tagline mb-4">
+                                De la oficina al paseo.<br>
+                                Del trabajo al ritual.<br>
+                                <span class="highlight">Sin cambiar de bolso.</span>
+                            </h3>
+                        </div>
+
+                        <div class="info-main-text">
+                            <p class="info-paragraph">
+                                Diseñado para quienes viven entre reuniones, ciudad y movimiento, <strong>MATEA</strong> 
+                                integra el mate de forma natural, elegante y funcional, sin sacrificar diseño, estética ni status.
+                            </p>
+                            <p class="info-paragraph">
+                                Su sistema exclusivo <strong>Mate Pocket System</strong> incorpora un compartimento exterior 
+                                pensado específicamente para el mate, permitiéndote llevarlo visible, accesible y seguro, 
+                                mientras el resto del bolso mantiene una silueta limpia y sofisticada.
+                            </p>
+                        </div>
+                    </div>
                     }
-                    @if (activeTab === 'resenas') {
+                  <!--   @if (activeTab === 'resenas') {
                     <p>Opiniones de nuestros clientes.</p>
-                    }
+                    } -->
                 </div>
             </div>
         </div>
+    </div>
+    
+    <!-- Image Modal / Lightbox -->
+    <div class="image-modal" *ngIf="showModal" (click)="closeImageModal()">
+        <img [src]="modalImage" alt="{{product.title}}" class="modal-image" (click)="$event.stopPropagation()">
     </div>
 </div>

@@ -20,7 +20,7 @@ export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;
   cartItems: any[] = [];
   subtotal = 0;
-  shippingCost = 5.00;
+  shippingCost = 0;
   total = 0;
   discount = 0;
   isLoading = false;

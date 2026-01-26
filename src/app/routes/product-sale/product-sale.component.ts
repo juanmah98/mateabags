@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
@@ -11,31 +11,46 @@ import { Product } from '../../models/product.model';
   templateUrl: './product-sale.component.html',
   styleUrl: './product-sale.component.scss'
 })
-export class ProductSaleComponent implements OnInit {
+export class ProductSaleComponent implements OnInit, AfterViewInit {
   // Inicializar con valores por defecto o vacíos
   product = {
     title: 'MATEA ORIGIN',
-    subtitle: 'EDICION LIMITADA',
+    subtitle: 'EDICIÓN LIMITADA',
     description: 'Un compartimento exterior diseñado para sujetarlo cuando está servido.',
     price: 128,
     currency: '€'
   };
 
   images = [
-    'assets/carrusel/imagen-1.webp ',
-    'assets/carrusel/imagen-2.webp',
-    'assets/carrusel/imagen-3.webp',
-    'assets/carrusel/imagen-4.webp'
+    'assets/product-sale/imagen-3.jpg',
+    'assets/product-sale/imagen-2.jpg',
+    'assets/product-sale/product-0.png',
+    'assets/product-sale/product-1.png',
+    'assets/product-sale/product-2.jpg',
+    'assets/product-sale/product-3.jpg',
+    'assets/product-sale/product-4.png',
+    'assets/product-sale/product-5.png',
+    'assets/product-sale/product-6.jpg',
+
   ];
 
   selectedImage = this.images[0];
   quantity = 1;
-  activeTab = 'descripcion';
+  activeTab = 'tecnica';
 
   // Using a solid color for the implementation as seen in image
   selectedColor = '#1C352D';
 
   isLoading = true;
+
+  // Gallery scroll
+  @ViewChild('thumbnailsContainer') thumbnailsContainer!: ElementRef;
+  scrollPosition = 0;
+  maxScroll = 0;
+
+  // Image modal
+  showModal = false;
+  modalImage = '';
 
   constructor(
     private supabaseService: SupabaseService,
@@ -44,6 +59,21 @@ export class ProductSaleComponent implements OnInit {
 
   ngOnInit() {
     this.loadProduct();
+  }
+
+  ngAfterViewInit() {
+    // Calcular maxScroll después de que la vista se renderice
+    setTimeout(() => {
+      this.updateScrollLimits();
+    }, 500);
+  }
+
+  updateScrollLimits() {
+    if (this.thumbnailsContainer) {
+      const container = this.thumbnailsContainer.nativeElement;
+      this.maxScroll = container.scrollWidth - container.clientWidth;
+      this.scrollPosition = container.scrollLeft;
+    }
   }
 
   productId: string = ''; // Store the real ID
@@ -68,7 +98,7 @@ export class ProductSaleComponent implements OnInit {
 
       this.product = {
         title: activeProduct.title.toUpperCase(),
-        subtitle: 'EDICION LIMITADA', // Esto podría venir de metadata si existiera
+        subtitle: 'EDICIÓN LIMITADA', // Esto podría venir de metadata si existiera
         description: activeProduct.description || this.product.description,
         price: activeProduct.price,
         currency: activeProduct.currency || '€'
@@ -86,6 +116,34 @@ export class ProductSaleComponent implements OnInit {
 
   selectImage(image: string) {
     this.selectedImage = image;
+  }
+
+  scrollGallery(direction: 'left' | 'right') {
+    const container = this.thumbnailsContainer.nativeElement;
+    const scrollAmount = 300; // Píxeles por click
+
+    if (direction === 'left') {
+      container.scrollLeft -= scrollAmount;
+    } else {
+      container.scrollLeft += scrollAmount;
+    }
+
+    // Actualizar posición actual
+    setTimeout(() => {
+      this.updateScrollLimits();
+    }, 100);
+  }
+
+  openImageModal(image: string) {
+    this.modalImage = image;
+    this.showModal = true;
+    // Prevenir scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeImageModal() {
+    this.showModal = false;
+    document.body.style.overflow = 'auto';
   }
 
   incrementQuantity() {

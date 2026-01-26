@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-checkout-success',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-checkout-success',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="success-container">
-      <div class="container py-5">
+      <div class="container py-5 mt-5">
         <div class="card shadow-sm mx-auto" style="max-width: 600px;">
           <div class="card-body text-center py-5">
             <div class="icon-circle mx-auto mb-4">
@@ -36,7 +36,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .success-container {
       min-height: 80vh;
       background: linear-gradient(to bottom, #f8f9fa, #ffffff);
@@ -54,14 +54,14 @@ import { Router } from '@angular/router';
   `]
 })
 export class CheckoutSuccessComponent implements OnInit {
-    constructor(private router: Router) { }
+  constructor(private router: Router) { }
 
-    ngOnInit() {
-        // Limpiar order_id pendiente del localStorage
-        localStorage.removeItem('pending_order_id');
-    }
+  ngOnInit() {
+    // Limpiar order_id pendiente del localStorage
+    localStorage.removeItem('pending_order_id');
+  }
 
-    goHome() {
-        this.router.navigate(['/']);
-    }
+  goHome() {
+    this.router.navigate(['/']);
+  }
 }
