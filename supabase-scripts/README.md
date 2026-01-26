@@ -135,8 +135,8 @@ SELECT get_order_status('uuid-de-orden-existente');
 ### Test de Edge Function (cURL)
 
 ```bash
-curl -X POST 'https://xxxxx.supabase.co/functions/v1/create-checkout-session' \
-  -H 'Authorization: Bearer YOUR_ANON_KEY' \
+curl -X POST 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/create-checkout-session' \
+  -H 'Authorization: Bearer YOUR_SUPABASE_ANON_KEY' \
   -H 'Content-Type: application/json' \
   -d '{
     "customer": {"name": "Test", "email": "test@test.com"},
