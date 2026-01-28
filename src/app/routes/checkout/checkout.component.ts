@@ -90,13 +90,12 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     // Si no hay items (acceso directo por URL), redirigir
-    /* 
-    // Comentado para facilitar pruebas directas si se desea, 
-    // pero idealmente deberíamos redirigir a tienda si el carrito está vacío.
     if (this.cartItems.length === 0) {
+      console.warn('⚠️ Checkout vacío - redirigiendo a producto');
       this.router.navigate(['/home/product-sale']);
+      return;
     }
-    */
+
     this.calculateTotals();
   }
 

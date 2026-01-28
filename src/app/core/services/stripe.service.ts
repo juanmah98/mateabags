@@ -147,7 +147,9 @@ export class StripeService {
             }
         ).pipe(
             catchError(err => {
-                console.error('Error creating checkout session:', err);
+                console.error('❌ Error creating checkout session:', err);
+                console.error('❌ Status:', err.status);
+                console.error('❌ Error body:', err.error);
                 return throwError(() => new Error('Error al crear sesión de pago'));
             })
         );

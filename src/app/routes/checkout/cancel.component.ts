@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-checkout-cancel',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-checkout-cancel',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="cancel-container">
       <div class="container py-5">
         <div class="card shadow-sm mx-auto" style="max-width: 600px;">
@@ -23,12 +23,12 @@ import { Router } from '@angular/router';
             
             <div class="alert alert-warning mb-4">
               <i class="bi bi-info-circle me-2"></i>
-              Tu carrito sigue guardado
+              Puedes volver a intentarlo cuando quieras
             </div>
             
             <div class="d-grid gap-2 col-md-8 mx-auto">
               <button class="btn btn-primary" (click)="goBack()">
-                <i class="bi bi-arrow-left me-2"></i>Volver al Checkout
+                <i class="bi bi-bag-fill me-2"></i>Ver Producto
               </button>
               <button class="btn btn-outline-secondary" (click)="goHome()">
                 <i class="bi bi-house-fill me-2"></i>Ir al Inicio
@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .cancel-container {
       min-height: 80vh;
       background: linear-gradient(to bottom, #fff3cd, #ffffff);
@@ -57,13 +57,14 @@ import { Router } from '@angular/router';
   `]
 })
 export class CheckoutCancelComponent {
-    constructor(private router: Router) { }
+  constructor(private router: Router) { }
 
-    goBack() {
-        this.router.navigate(['/checkout']);
-    }
+  goBack() {
+    // Redirigir al producto en lugar de volver al checkout vacío
+    this.router.navigate(['/home/product-sale']);
+  }
 
-    goHome() {
-        this.router.navigate(['/']);
-    }
+  goHome() {
+    this.router.navigate(['/']);
+  }
 }
