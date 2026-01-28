@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
 import { Product } from '../../models/product.model';
+import { APP_CONSTANTS } from '../../config/constants';
 
 @Component({
   selector: 'app-product-sale',
@@ -188,8 +189,8 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
 
   // Presale validation methods
   private checkPresaleAccess() {
-    // Import constants
-    const { ENABLED, DEADLINE } = (window as any).APP_CONSTANTS?.PRESALE_VALIDATION || { ENABLED: true, DEADLINE: new Date('2026-01-29T20:00:00+01:00') };
+    // Get presale validation config
+    const { ENABLED, DEADLINE } = APP_CONSTANTS.PRESALE_VALIDATION;
 
     // Check if presale validation is enabled
     if (!ENABLED) {

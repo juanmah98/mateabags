@@ -3,9 +3,9 @@ import { Router, CanActivateFn } from '@angular/router';
 import { LaunchService } from '../services/launch.service';
 
 /**
- * Guard para el home
- * Permite el acceso solo si ya se ha lanzado la aplicación (después del countdown)
- * Antes del lanzamiento, redirige al waitlist
+ * Guard para product-sale
+ * Permite el acceso solo si ya se ha lanzado (después del 28 enero 2026, 20:00 España)
+ * Antes del lanzamiento, redirige al home
  */
 export const homeDateGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -16,7 +16,7 @@ export const homeDateGuard: CanActivateFn = (route, state) => {
         return true;
     }
 
-    // Si no se ha lanzado, redirigir al waitlist
-    router.navigate(['/waitlist']);
+    // Si no se ha lanzado, redirigir al home
+    router.navigate(['/home']);
     return false;
 };

@@ -1,9 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { animate } from 'animejs';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { LaunchService } from '../../core/services/launch.service';
 
 @Component({
   selector: 'app-home',
@@ -41,10 +42,38 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private errorTimeoutId?: ReturnType<typeof setTimeout>;
 
-  constructor(private supabaseService: SupabaseService) { }
+  constructor(
+    private supabaseService: SupabaseService,
+    private router: Router,
+    private launchService: LaunchService
+  ) { }
 
   ngOnInit() {
     // Inicialización del componente
+  }
+
+  /**
+   * Checks if the sale has launched based on the configured launch date
+   */
+  get isSaleLaunched(): boolean {
+    return this.launchService.isLaunched();
+  }
+
+  /**
+   * Handles button click for "Comprar" - either scrolls to form or navigates to product-sale
+   * depending on whether the sale has launched
+   */
+  scrollToForm() {
+    if (this.isSaleLaunched) {
+      // After launch (>= Jan 28, 2026 20:00): navigate to product sale page
+      this.router.navigate(['/home/product-sale']);
+    } else {
+      // Before launch (< Jan 28, 2026 20:00): scroll to waitlist form
+      const formSection = document.querySelector('.form-section');
+      if (formSection) {
+        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   }
 
   ngAfterViewInit() {
@@ -425,12 +454,5 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showSuccessPopup = false;
     this.submitSuccess = false;
     window.open('https://www.instagram.com/mateabags/', '_blank');
-  }
-
-  scrollToForm() {
-    const formSection = document.querySelector('.form-section');
-    if (formSection) {
-      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   }
 }

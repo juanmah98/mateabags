@@ -1,29 +1,25 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
-import { homeDateGuard } from './core/guards/home-date.guard';
-import { waitlistGuard } from './core/guards/waitlist.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent),
-    canActivate: [waitlistGuard]
+    loadComponent: () => import('./routes/home/home.component').then(m => m.HomeComponent)
   },
   {
     path: 'waitlist',
-    loadComponent: () => import('./routes/waitlist/waitlist.component').then(m => m.WaitlistComponent),
-    canActivate: [waitlistGuard]
+    redirectTo: 'home',
+    pathMatch: 'full'
   },
   {
     path: 'home',
-    loadComponent: () => import('./routes/home/home.component').then(m => m.HomeComponent),
-    /* canActivate: [homeDateGuard]  */ // TODO: Descomentar antes de producción
+    loadComponent: () => import('./routes/home/home.component').then(m => m.HomeComponent)
   },
   {
     path: 'home/product-sale',
-    loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent),
-    canActivate: [homeDateGuard]
+    loadComponent: () => import('./routes/product-sale/product-sale.component').then(m => m.ProductSaleComponent)
+    // No guard - presale popup handles access validation internally (until Jan 29, 2026 20:00)
   },
   // Legal routes
   {

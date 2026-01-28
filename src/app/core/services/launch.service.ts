@@ -4,11 +4,12 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class LaunchService {
-    // FECHA OBJETIVO
-    // 01 de febrero de 2026, 23:59:59 (Mes es 0-indexado en JS Date, 0 = Enero, 1 = Febrero)
-    // Nota: El comentario original decía "01 de febrero", pero new Date(2026, 0, 17) es 17 de Enero.
-    // Respetaré la fecha configurada en el código: 17 de Enero de 2026 a las 20:00:00
-    public readonly targetDate: Date = new Date(2026, 0, 18, 13, 0, 0);
+    /**
+     * SALE LAUNCH DATE
+     * January 28, 2026 at 20:00 Spain time (CET = UTC+1)
+     * After this date, home page will redirect to product sale instead of waitlist
+     */
+    public readonly targetDate: Date = new Date('2026-01-28T20:00:00+01:00');
 
     constructor() { }
 

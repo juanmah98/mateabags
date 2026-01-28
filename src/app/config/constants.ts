@@ -49,6 +49,13 @@ export const APP_CONSTANTS = {
         STORAGE_KEY: 'presale_access_verified'
     },
 
+    // Sale launch configuration for home page behavior
+    SALE_LAUNCH: {
+        // Launch date: January 28, 2026 at 20:00 Spain time (CET = UTC+1)
+        // After this date, home page buttons will redirect to /product-sale instead of scrolling to form
+        LAUNCH_DATE: new Date('2026-01-28T20:00:00+01:00')
+    },
+
     // Validaciones
     VALIDATION: {
         MIN_PASSWORD_LENGTH: 8,
