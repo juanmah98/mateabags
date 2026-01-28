@@ -1,0 +1,154 @@
+<div class="success-container mt-3">
+    <div class="container py-4">
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando detalles del pedido...</p>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="hasError && !isLoading" class="alert alert-danger mx-auto" style="max-width: 600px;">
+            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Error</h5>
+            <p class="mb-0">No se pudo cargar la información del pedido.</p>
+            <hr>
+            <button class="btn btn-outline-danger btn-sm" (click)="goHome()">
+                <i class="bi bi-house-fill me-2"></i>Volver al Inicio
+            </button>
+        </div>
+
+        <!-- Order Receipt -->
+        <div *ngIf="!isLoading && !hasError" class="receipt-wrapper">
+            <div id="order-receipt" class="receipt-container">
+                <!-- Header -->
+                <div class="receipt-header text-center mb-4">
+                    <div class="icon-circle mb-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h2 class="mb-2">¡Pedido Confirmado!</h2>
+                    <p class="text-muted">Gracias por tu compra en Mateabags</p>
+                </div>
+
+                <!-- Order Info -->
+                <div class="receipt-section mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>ID del Pedido:</strong></p>
+                            <p class="text-muted">#{{ orderHashCode }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="mb-1"><strong>Fecha:</strong></p>
+                            <p class="text-muted">{{ orderDate | date:'dd/MM/yyyy HH:mm' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Customer Information -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-person-fill me-2"></i>Datos del Cliente</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Nombre:</p>
+                            <p class="mb-3">{{ orderData?.customer?.name }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Email:</p>
+                            <p class="mb-3">{{ orderData?.customer?.email }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1 text-muted small">Teléfono:</p>
+                            <p class="mb-3">{{ orderData?.customer?.phone }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Dirección de Envío</h5>
+                    <p class="mb-1">
+                        {{ orderData?.address?.street }} {{ orderData?.address?.number }}<span *ngIf="orderData?.address?.floor || orderData?.address?.door">, Piso {{ orderData?.address?.floor }}<span *ngIf="orderData?.address?.door"> Puerta {{ orderData?.address?.door }}</span></span>
+                    </p>
+                    <p class="mb-1">{{ orderData?.address?.postcode }} {{ orderData?.address?.town }}</p>
+                    <p class="mb-1">{{ orderData?.address?.city }}, {{ orderData?.address?.country }}</p>
+                    <p class="mb-0" *ngIf="orderData?.address?.extraInstructions"><small class="text-muted"><i class="bi bi-info-circle me-1"></i>{{ orderData?.address?.extraInstructions }}</small></p>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Products Table -->
+                <div class="receipt-section mb-4">
+                    <h5 class="section-title mb-3"><i class="bi bi-bag-fill me-2"></i>Productos</h5>
+                    <div class="table-responsive">
+                        <table class="table receipt-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio Unit.</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of items">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <strong>{{ item.title }}</strong>
+                                                <br>
+                                                <small class="text-muted" *ngIf="item.sku">SKU: {{ item.sku }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">{{ item.quantity }}</td>
+                                    <td class="text-end align-middle">{{ item.unit_price | currency:'EUR' }}</td>
+                                    <td class="text-end align-middle"><strong>{{ item.total_price | currency:'EUR' }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="receipt-totals">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>{{ subtotal | currency:'EUR' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2" *ngIf="discount > 0">
+                        <span>Descuento:</span>
+                        <span class="text-success">-{{ discount | currency:'EUR' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3" *ngIf="shippingCost > 0">
+                        <span>Gastos de envío:</span>
+                        <span>{{ shippingCost | currency:'EUR' }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between total-amount">
+                        <strong>Total:</strong>
+                        <strong>{{ total | currency:'EUR' }}</strong>
+                    </div>
+                </div>
+
+                <!-- Footer Note -->
+                <div class="receipt-footer mt-4 text-center">
+                    <p class="text-muted small mb-0">Recibirás un email de confirmación en breve.</p>
+                    <p class="text-muted small">¡Gracias por confiar en Mateabags!</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons (outside receipt for PDF) -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary me-3" (click)="downloadReceipt()">
+                    <i class="bi bi-download me-2"></i>Descargar PDF
+                </button>
+                <button class="btn btn-primary" (click)="goHome()">
+                    <i class="bi bi-house-fill me-2"></i>Volver a la Tienda
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
