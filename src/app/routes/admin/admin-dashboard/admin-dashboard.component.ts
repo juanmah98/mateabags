@@ -37,12 +37,22 @@ export class AdminDashboardComponent implements OnInit {
   chartType: 'bar' | 'analysis' = 'bar';
 
   // Analysis Metrics
+  // Analysis Metrics
   analysisMetrics = {
-    totalVisits: 0,         // Visitas Totales
-    conversionRate: 0,      // Ventas / Visitas
-    purchaseIntent: 0,      // Inicios de Checkout / Visitas
-    checkoutSuccess: 0,     // Ventas / Inicios de Checkout
-    paymentSuccessRate: 0   // Ventas / Submit
+    totalVisits: 0,
+    conversionRate: 0,
+    purchaseIntent: 0,
+    formCompletionRate: 0,
+    checkoutAbandonment: 0,
+    paymentApprovalRate: 0,
+    cancellationRate: 0,
+    // Ratios Strings
+    conversionRatio: '',
+    purchaseIntentRatio: '',
+    formCompletionRatio: '',
+    formAbandonmentRatio: '',
+    paymentApprovalRatio: '',
+    cancellationRatio: ''
   };
 
   constructor(private supabaseService: SupabaseService) { }
@@ -125,17 +135,68 @@ export class AdminDashboardComponent implements OnInit {
       const starts = counts['start_checkout'] || 0;
       const submits = counts['submit_checkout'] || 0;
       const sales = counts['payment_success'] || 0;
+      const cancels = counts['payment_cancel'] || 0;
+
+      // Ensure stable denominators
+      const paymentBase = Math.max(submits, sales + cancels);
 
       this.analysisMetrics = {
         totalVisits: visits,
         conversionRate: visits > 0 ? (sales / visits) * 100 : 0,
         purchaseIntent: visits > 0 ? (starts / visits) * 100 : 0,
-        checkoutSuccess: starts > 0 ? (sales / starts) * 100 : 0,
-        paymentSuccessRate: submits > 0 ? (sales / submits) * 100 : 0
+
+        // Funnel Step: Form
+        formCompletionRate: starts > 0 ? (submits / starts) * 100 : 0,
+        checkoutAbandonment: starts > 0 ? ((starts - submits) / starts) * 100 : 0,
+
+        // Funnel Step: Payment
+        paymentApprovalRate: paymentBase > 0 ? (sales / paymentBase) * 100 : 0,
+        cancellationRate: paymentBase > 0 ? (cancels / paymentBase) * 100 : 0,
+
+        // Ratios
+        conversionRatio: this.getRatioString(sales, visits),
+        purchaseIntentRatio: this.getRatioString(starts, visits),
+        formCompletionRatio: this.getRatioString(submits, starts),
+        formAbandonmentRatio: this.getRatioString(starts - submits, starts),
+        paymentApprovalRatio: this.getRatioString(sales, paymentBase),
+        cancellationRatio: this.getRatioString(cancels, paymentBase)
       };
 
     } catch (error) {
       console.error('Error loading analytics chart:', error);
     }
+  }
+
+  private getRatioString(count: number, total: number): string {
+    if (total === 0 || count === 0) return '0 de cada ' + total;
+
+    // Simplificar fracción
+    const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
+    const common = gcd(count, total);
+
+    // Si la fracción es muy compleja (ej: 13/87), intentar aproximar
+    const p = count / total;
+
+    if (p > 0.99) return 'Totalidad';
+    if (p < 0.01) return 'Menos del 1%';
+
+    // Aproximaciones comunes
+    if (Math.abs(p - 0.5) < 0.05) return '1 de cada 2';
+    if (Math.abs(p - 0.33) < 0.05) return '1 de cada 3';
+    if (Math.abs(p - 0.25) < 0.05) return '1 de cada 4';
+    if (Math.abs(p - 0.2) < 0.05) return '1 de cada 5';
+    if (Math.abs(p - 0.1) < 0.05) return '1 de cada 10';
+
+    // Por defecto usar la fracción simplificada si el denominador es pequeño (< 20)
+    const num = count / common;
+    const den = total / common;
+
+    if (den <= 20) return `${num} de cada ${den}`;
+
+    // Si denominador es grande, normalizar a "de cada 10" o "de cada 100"
+    const outOf10 = Math.round(p * 10);
+    if (outOf10 > 0) return `${outOf10} de cada 10`;
+
+    return `${Math.round(p * 100)} de cada 100`;
   }
 }
