@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { SupabaseService } from '../../core';
 
 @Component({
   selector: 'app-checkout-cancel',
@@ -26,6 +27,11 @@ import { Router } from '@angular/router';
               Puedes volver a intentarlo cuando quieras
             </div>
             
+            <div *ngIf="isUpdating" class="mb-3 text-muted small">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Actualizando estado del pedido...
+            </div>
+
             <div class="d-grid gap-2 col-md-8 mx-auto">
               <button class="btn btn-primary" (click)="goBack()">
                 <i class="bi bi-bag-fill me-2"></i>Ver Producto
@@ -56,8 +62,41 @@ import { Router } from '@angular/router';
     }
   `]
 })
-export class CheckoutCancelComponent {
-  constructor(private router: Router) { }
+export class CheckoutCancelComponent implements OnInit {
+  isUpdating = false;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private supabaseService: SupabaseService
+  ) { }
+
+  ngOnInit(): void {
+    // Obtener order_id de la URL y marcar como cancelado
+    this.route.queryParams.subscribe(async params => {
+      const orderId = params['order_id'];
+      if (orderId) {
+        console.log('❌ Cancel page loaded for order:', orderId);
+        this.markOrderAsCancelled(orderId);
+      }
+    });
+  }
+
+  async markOrderAsCancelled(orderId: string) {
+    this.isUpdating = true;
+    try {
+      const { error } = await this.supabaseService.updateOrderStatus(orderId, 'cancelled');
+      if (error) {
+        console.error('Error marking order as cancelled:', error);
+      } else {
+        console.log('✅ Order marked as cancelled successfully');
+      }
+    } catch (err) {
+      console.error('Exception marking order as cancelled:', err);
+    } finally {
+      this.isUpdating = false;
+    }
+  }
 
   goBack() {
     // Redirigir al producto en lugar de volver al checkout vacío

@@ -45,7 +45,7 @@ export const APP_CONSTANTS = {
         // Set to false to disable presale validation
         ENABLED: true,
         // Deadline: January 29, 2026 at 20:00 Spain time (CET = UTC+1)
-        DEADLINE: new Date('2026-01-29T20:00:00+01:00'),
+        DEADLINE: new Date('2026-01-29T14:00:00+01:00'),
         STORAGE_KEY: 'presale_access_verified'
     },
 
