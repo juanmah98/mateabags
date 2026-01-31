@@ -71,6 +71,13 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.checkPresaleAccess();
     this.loadProduct();
+
+    // Track page view
+    this.supabaseService.trackEvent({
+      event_type: 'view_page',
+      page: '/home/product-sale',
+      metadata: { product: 'Matea Bag' }
+    });
   }
 
   ngAfterViewInit() {
@@ -173,6 +180,17 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
   }
 
   goToCheckout() {
+    // Track checkout start
+    this.supabaseService.trackEvent({
+      event_type: 'start_checkout',
+      page: '/home/product-sale',
+      metadata: {
+        product_id: this.productId,
+        quantity: this.quantity,
+        total: this.product.price * this.quantity
+      }
+    });
+
     this.router.navigate(['/checkout'], {
       state: {
         items: [{

@@ -24,14 +24,55 @@
 
     <!-- Chart Area -->
     <div class="chart-container">
-        <h3 class="chart-title">Crecimiento de Waitlist</h3>
+        <div class="chart-header">
+            <h3 class="chart-title">Embudo de Ventas (Últimos 30 días)</h3>
+            <div class="chart-actions">
+                <button class="btn-toggle" [class.active]="chartType === 'bar'" (click)="setChartType('bar')">
+                    Barras
+                </button>
+                <button class="btn-toggle" [class.active]="chartType === 'analysis'" (click)="setChartType('analysis')">
+                    Análisis
+                </button>
+            </div>
+        </div>
+        
         <div class="simple-chart">
-            <div class="chart-bars">
-                <div *ngFor="let item of chartData" class="chart-bar" [style.height.%]="(item.value / 30) * 100">
+            <!-- BAR CHART -->
+            <div class="chart-bars" *ngIf="chartType === 'bar'">
+                <div *ngFor="let item of chartData" class="chart-bar" 
+                     [style.height.%]="maxChartValue > 0 ? (item.value / maxChartValue) * 100 : 0"
+                     [title]="item.day + ': ' + item.value">
                     <span class="bar-value">{{ item.value }}</span>
                 </div>
             </div>
-            <div class="chart-labels">
+
+            <!-- ANALYSIS GRID -->
+            <div class="metrics-grid" *ngIf="chartType === 'analysis'">
+                <div class="metric-card full-width" style="grid-column: 1 / -1; background: #e6fcf5; border-color: #20c997;">
+                    <div class="metric-value" style="color: #0ca678;">{{ analysisMetrics.totalVisits }}</div>
+                    <div class="metric-label">VISITAS TOTALES<br><small>(Web Views)</small></div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">{{ analysisMetrics.conversionRate | number:'1.1-2' }}%</div>
+                    <div class="metric-label">TASA DE CONVERSIÓN<br><small>(Visitas -> Ventas)</small></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">{{ analysisMetrics.purchaseIntent | number:'1.1-2' }}%</div>
+                    <div class="metric-label">INTENCIÓN DE COMPRA<br><small>(Visitas -> Checkout)</small></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">{{ analysisMetrics.checkoutSuccess | number:'1.1-2' }}%</div>
+                    <div class="metric-label">ÉXITO DEL CHECKOUT<br><small>(Checkout -> Ventas)</small></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">{{ analysisMetrics.paymentSuccessRate | number:'1.1-2' }}%</div>
+                    <div class="metric-label">ÉXITO PAGO<br><small>(Submit -> Ventas)</small></div>
+                </div>
+            </div>
+            <!-- Labels removed from bottom div as they are now in SVG -->
+
+            <div class="chart-labels" *ngIf="chartType === 'bar'">
                 <span *ngFor="let item of chartData" class="label">{{ item.day }}</span>
             </div>
         </div>

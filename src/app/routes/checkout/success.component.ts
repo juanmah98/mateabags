@@ -49,6 +49,13 @@ export class CheckoutSuccessComponent implements OnInit {
       }
 
       await this.loadOrderData();
+
+      // Track success
+      this.supabaseService.trackEvent({
+        event_type: 'payment_success',
+        page: '/checkout/success',
+        metadata: { order_id: this.orderId }
+      });
     });
   }
 

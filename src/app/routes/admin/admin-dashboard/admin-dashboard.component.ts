@@ -33,12 +33,27 @@ export class AdminDashboardComponent implements OnInit {
   isLoading = true;
 
   chartData: ChartDataPoint[] = [];
+  maxChartValue: number = 0;
+  chartType: 'bar' | 'analysis' = 'bar';
+
+  // Analysis Metrics
+  analysisMetrics = {
+    totalVisits: 0,         // Visitas Totales
+    conversionRate: 0,      // Ventas / Visitas
+    purchaseIntent: 0,      // Inicios de Checkout / Visitas
+    checkoutSuccess: 0,     // Ventas / Inicios de Checkout
+    paymentSuccessRate: 0   // Ventas / Submit
+  };
 
   constructor(private supabaseService: SupabaseService) { }
 
+  setChartType(type: 'bar' | 'analysis') {
+    this.chartType = type;
+  }
+
   async ngOnInit() {
     await this.loadStats();
-    await this.loadWaitlistChart();
+    await this.loadAnalyticsChart();
   }
 
   async loadStats() {
@@ -68,95 +83,59 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   /**
-   * Carga los datos del gráfico de waitlist de los últimos 7 días
+   * Carga los datos de analíticas (Embudo)
    */
-  async loadWaitlistChart() {
+  async loadAnalyticsChart() {
     try {
-      // Obtener registros de waitlist a través del servicio
-      const { data, error } = await this.supabaseService.getWaitlistDataForChart(7);
+      // Obtener estadísticas de los últimos 30 días
+      const { data, error } = await this.supabaseService.getAnalyticsStats(30);
 
       if (error) {
-        console.error('Error loading waitlist chart data:', error);
-        this.setDefaultChartData();
+        console.error('Error loading analytics data:', error);
         return;
       }
 
-      // Agrupar por día
-      const countsByDay = this.groupByDay(data || [], 7);
-      this.chartData = countsByDay;
+      // Mapear datos al formato del gráfico
+      // Eventos: view_page (product), start_checkout, submit_checkout, payment_success, payment_cancel
+
+      const counts: Record<string, number> = {};
+      if (data) {
+        data.forEach((item: any) => {
+          counts[item.event_type] = Number(item.count);
+        });
+      }
+
+      // Definir el embudo
+      this.chartData = [
+        { day: 'Visitas', date: '', value: counts['view_page'] || 0 }, // Product Page Views
+        { day: 'Inicio Check.', date: '', value: counts['start_checkout'] || 0 },
+        { day: 'Submit Check.', date: '', value: counts['submit_checkout'] || 0 },
+        { day: 'Pagado', date: '', value: counts['payment_success'] || 0 },
+        { day: 'Cancelado', date: '', value: counts['payment_cancel'] || 0 }
+      ];
+
+      // Calcular valor máximo para escalado
+      this.maxChartValue = Math.max(...this.chartData.map(d => d.value));
+      // Evitar división por cero y dar un pequeño margen
+      if (this.maxChartValue === 0) this.maxChartValue = 10;
+      else this.maxChartValue = Math.ceil(this.maxChartValue * 1.1);
+
+      // Calcular Métricas de Análisis
+      const visits = counts['view_page'] || 0;
+      const starts = counts['start_checkout'] || 0;
+      const submits = counts['submit_checkout'] || 0;
+      const sales = counts['payment_success'] || 0;
+
+      this.analysisMetrics = {
+        totalVisits: visits,
+        conversionRate: visits > 0 ? (sales / visits) * 100 : 0,
+        purchaseIntent: visits > 0 ? (starts / visits) * 100 : 0,
+        checkoutSuccess: starts > 0 ? (sales / starts) * 100 : 0,
+        paymentSuccessRate: submits > 0 ? (sales / submits) * 100 : 0
+      };
 
     } catch (error) {
-      console.error('Error loading waitlist chart:', error);
-      this.setDefaultChartData();
+      console.error('Error loading analytics chart:', error);
     }
-  }
-
-  /**
-   * Agrupa los registros por día y cuenta cuántos hay en cada uno
-   */
-  private groupByDay(records: any[], daysCount: number): ChartDataPoint[] {
-    const today = new Date();
-    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    const result: ChartDataPoint[] = [];
-
-    // Crear un mapa de fechas con conteos
-    const countMap = new Map<string, number>();
-
-    // Contar registros por fecha
-    records.forEach(record => {
-      const date = new Date(record.created_at);
-      // Usar fecha local para el key, no UTC
-      const dateKey = this.getLocalISODate(date);
-      countMap.set(dateKey, (countMap.get(dateKey) || 0) + 1);
-    });
-
-    // Generar array de los últimos N días
-    for (let i = daysCount - 1; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      // No necesitamos setHours a 0 si usamos getLocalISODate que extrae YYYY-MM-DD
-
-      const dateKey = this.getLocalISODate(date);
-      const dayName = dayNames[date.getDay()];
-      const count = countMap.get(dateKey) || 0;
-
-      result.push({
-        day: dayName,
-        date: dateKey,
-        value: count
-      });
-    }
-
-    return result;
-  }
-
-  /**
-   * Convierte una fecha a string YYYY-MM-DD en hora local
-   */
-  private getLocalISODate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  /**
-   * Establece datos por defecto si no hay datos reales
-   */
-  private setDefaultChartData() {
-    const today = new Date();
-    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-    this.chartData = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(today);
-      date.setDate(today.getDate() - (6 - i));
-
-
-      return {
-        day: dayNames[date.getDay()],
-        date: this.getLocalISODate(date),
-        value: 0
-      };
-    });
   }
 }

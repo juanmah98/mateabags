@@ -78,6 +78,13 @@ export class CheckoutCancelComponent implements OnInit {
       if (orderId) {
         console.log('❌ Cancel page loaded for order:', orderId);
         this.markOrderAsCancelled(orderId);
+
+        // Track cancel
+        this.supabaseService.trackEvent({
+          event_type: 'payment_cancel',
+          page: '/checkout/cancel',
+          metadata: { order_id: orderId }
+        });
       }
     });
   }

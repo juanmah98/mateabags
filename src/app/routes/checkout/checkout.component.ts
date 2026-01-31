@@ -97,6 +97,16 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.calculateTotals();
+
+    // Track page view
+    this.supabaseService.trackEvent({
+      event_type: 'view_page',
+      page: '/checkout',
+      metadata: {
+        cart_items: this.cartItems.length,
+        total: this.total
+      }
+    });
   }
 
   calculateTotals() {
@@ -210,6 +220,17 @@ export class CheckoutComponent implements OnInit {
       is_gift: formValue.gift.is_gift,
       gift_message: formValue.gift.is_gift ? formValue.gift.gift_message : undefined
     }));
+
+    // Track checkout submission
+    this.supabaseService.trackEvent({
+      event_type: 'submit_checkout',
+      page: '/checkout',
+      metadata: {
+        customer_email: customer.email,
+        items_count: items.length,
+        total: this.total
+      }
+    });
 
     // Llamar a Stripe para crear sesión
     this.stripeService.createCheckoutSession(

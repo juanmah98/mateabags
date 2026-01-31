@@ -17,6 +17,14 @@ import { CustomerDTO } from '../../models/customer.model';
 import { AddressDTO } from '../../models/address.model';
 import { OrderStatus } from '../../models/enums';
 
+export interface AnalyticsEvent {
+  event_type: string;
+  page: string;
+  metadata?: any;
+  user_email?: string;
+  session_id?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -452,6 +460,47 @@ export class SupabaseService {
       return { data, error };
     } catch (error) {
       console.error('Error updating order status:', error);
+      return { data: null, error };
+    }
+  }
+
+  // Analytics Methods
+
+  async trackEvent(event: AnalyticsEvent): Promise<void> {
+    try {
+      // Intentar obtener session_id del localStorage si no se provee
+      let sessionId = event.session_id;
+      if (!sessionId) {
+        sessionId = localStorage.getItem('analytics_session_id') || undefined;
+        if (!sessionId) {
+          sessionId = crypto.randomUUID();
+          localStorage.setItem('analytics_session_id', sessionId);
+        }
+      }
+
+      const { error } = await this.supabase
+        .from('user_analytics')
+        .insert({
+          ...event,
+          session_id: sessionId
+        });
+
+      if (error) {
+        console.error('Error tracking event:', error);
+      }
+    } catch (error) {
+      console.error('Error tracking event:', error);
+    }
+  }
+
+  async getAnalyticsStats(days: number): Promise<{ data: any[] | null, error: any }> {
+    try {
+      const { data, error } = await this.supabase
+        .rpc('get_analytics_stats', { days });
+
+      return { data, error };
+    } catch (error) {
+      console.error('Error fetching analytics stats:', error);
       return { data: null, error };
     }
   }
