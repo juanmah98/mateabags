@@ -25,15 +25,17 @@ export class ProductSaleComponent implements OnInit, AfterViewInit {
 
   images = [
     'assets/product-sale/imagen-3.webp',
-    'assets/product-sale/imagen-2.webp',
     'assets/product-sale/product-0.webp',
-    'assets/product-sale/product-1.webp',
     'assets/product-sale/product-7.webp',
-    'assets/product-sale/product-2.webp',
-    'assets/product-sale/product-3.webp',
+    'assets/product-sale/product-8.webp',
+    'assets/product-sale/product-9.webp',
+
+    'assets/product-sale/product-1.webp',
     'assets/product-sale/product-4.webp',
     'assets/product-sale/product-5.webp',
     'assets/product-sale/product-6.webp',
+    'assets/product-sale/product-3.webp',
+    'assets/product-sale/product-2.webp',
 
   ];
 
